@@ -11,7 +11,6 @@
     --border-color: #333333;
     --glass-bg: rgba(20, 20, 20, 0.85);
     --glass-border: rgba(30, 144, 255, 0.3);
-    /* Blue tinted border */
     --card-bg: #111111;
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.6);
@@ -23,6 +22,8 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Outfit', 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -31,7 +32,26 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     font-size: 15px;
-    /* Slightly more compact text */
+}
+
+/* Scrollbar Styling (Opera GX / Chrome / WebKit) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 5px;
+    border: 2px solid var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
 }
 
 /* Background Animations */
@@ -53,6 +73,9 @@ body {
     opacity: 0.3;
     animation: float 20s infinite ease-in-out;
     background: var(--accent-color);
+    /* WebKit compatibility */
+    -webkit-filter: blur(80px);
+    -webkit-animation: float 20s infinite ease-in-out;
 }
 
 @keyframes float {
@@ -67,6 +90,18 @@ body {
     }
 }
 
+@-webkit-keyframes float {
+
+    0%,
+    100% {
+        -webkit-transform: translate(0, 0);
+    }
+
+    50% {
+        -webkit-transform: translate(-30px, 30px);
+    }
+}
+
 /* Navigation - Compact */
 .nav-container {
     display: flex;
@@ -76,8 +111,10 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(16px);
+    /* Cross-browser glassmorphism */
     background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -88,6 +125,7 @@ body {
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
     transition: all 0.2s;
+    -webkit-transition: all 0.2s;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -105,9 +143,9 @@ body {
     display: none;
     padding: 2rem 1rem;
     max-width: 1000px;
-    /* More compact width */
     margin: 0 auto;
     animation: fadeIn 0.4s ease;
+    -webkit-animation: fadeIn 0.4s ease;
 }
 
 .section.active {
@@ -126,21 +164,34 @@ body {
     }
 }
 
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+        -webkit-transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+    }
+}
+
 /* Cards */
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-left: 3px solid var(--accent-color);
-    /* Blue accent on cards */
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow-sm);
     transition: transform 0.2s;
+    -webkit-transition: -webkit-transform 0.2s;
 }
 
 .card:hover {
     transform: translateY(-2px);
+    -webkit-transform: translateY(-2px);
     border-color: var(--accent-color);
     box-shadow: 0 0 15px rgba(30, 144, 255, 0.1);
 }
@@ -174,7 +225,6 @@ p {
     border-radius: 8px;
     overflow: hidden;
     height: 400px;
-    /* Smaller height */
     display: flex;
     flex-direction: column;
     background: #000;
@@ -184,6 +234,9 @@ p {
     flex: 1;
     padding: 1rem;
     overflow-y: auto;
+    /* Scrollbar for chat */
+    scrollbar-width: thin;
+    scrollbar-color: #333 var(--bg-main);
 }
 
 .chat-input-area {
@@ -212,6 +265,7 @@ p {
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
+    -webkit-transition: background 0.2s;
 }
 
 .action-btn:hover {
