@@ -1,301 +1,466 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- FORZADO DE REDEPPLOY -->
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>TeczerVideo | Modding & Development</title>
-
-  <!-- SEO -->
-  <meta name="description" content="Comunidad de modding, desarrollo de juegos y foro de información.">
-
-  <!-- Fonts -->
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff9800">
+  <meta property="og:title" content="Flarm Store | Proyectos de Jesús Quijada">
+  <meta property="og:description" content="Explora los proyectos más exitosos y recomendados de Jesús Quijada.">
+  <meta property="og:image" content="https://jesusquijada34.github.io/assets/banner-prev.png">
+  <meta property="og:url" content="https://jesusquijada34.github.io/">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>tStore | Gamer Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;500;700&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
-  <!-- Styles (Versioned for Cache Busting) -->
-  <link rel="stylesheet" href="css/style.css?v=2.0">
+  <link rel="stylesheet" href="css/style.css?v=3.2">
 </head>
 
-<body class="theme-info">
-
+<body>
   <!-- Background Animated -->
   <div class="bg-animation">
     <div class="bg-shape" style="top: 20%; left: 10%; width: 300px; height: 300px; background: var(--accent-color);">
     </div>
     <div class="bg-shape"
-      style="top: 60%; right: 10%; width: 400px; height: 400px; background: var(--text-secondary); animation-delay: -5s;">
-    </div>
+      style="top: 60%; right: 10%; width: 400px; height: 400px; background: #6a0dad; animation-delay: -5s;"></div>
   </div>
 
-  <!-- Navigation (Sidebar) -->
-  <nav class="nav-container">
-    <div class="nav-header">
-      <span class="material-icons-round">token</span>
-      <span>TeczerVideo</span>
-    </div>
-    <div class="nav-item active" data-tab="info">
-      <span class="material-icons-round">dashboard</span>
-      <span>Información</span>
-    </div>
-    <div class="nav-item" data-tab="games">
-      <span class="material-icons-round">sports_esports</span>
-      <span>Tienda</span>
-    </div>
-    <div class="nav-item" data-tab="programming">
-      <span class="material-icons-round">terminal</span>
-      <span>Dev Zone</span>
-    </div>
-    <div class="nav-item" data-tab="shortcuts">
-      <span class="material-icons-round">bookmarks</span>
-      <span>Accesos</span>
-    </div>
-  </nav>
+  <div class="app-container">
+    <main class="main-content">
+      <header class="top-header">
+        <div class="search-container">
+          <div class="search-box">
+            <span class="material-icons-round search-icon">search</span>
+            <input type="text" placeholder="Buscar apps" id="searchInput">
+          </div>
+        </div>
+        <img src="assets/logo.png" style="width:32px;height:32px;border-radius:8px;cursor:pointer;" alt="Profile">
+      </header>
 
-  <!-- Section: Information (Inicio) -->
-  <section id="info" class="section active" style="max-width:1400px; padding: 2rem;">
-    <div class="info-layout">
-      <!-- Left Sidebar (Bienvenido & Novedades) -->
-      <aside class="info-sidebar">
-        <div class="card sidebar-card">
-          <h1>Bienvenido a TeczerVideo</h1>
-          <p>Centro definitivo de modding.</p>
+      <div class="content-tabs">
+        <div class="tab-item active" onclick="switchTab('apps')">
+          <span class="material-icons-round">apps</span>
+          <span>Apps</span>
+        </div>
+        <div class="tab-item" onclick="switchTab('updates')">
+          <span class="material-icons-round">system_update</span>
+          <span>Actualizaciones</span>
+        </div>
+      </div>
+
+      <div id="contentArea" class="content-wrapper">
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <div class="bottom-nav-item active" onclick="switchTab('apps')">
+        <span class="material-icons-round">apps</span>
+        <span>Apps</span>
+      </div>
+      <div class="bottom-nav-item" onclick="switchTab('updates')">
+        <span class="material-icons-round">system_update</span>
+        <span>Actualizaciones</span>
+      </div>
+      <div class="bottom-nav-item" onclick="switchTab('search')">
+        <span class="material-icons-round">search</span>
+        <span>Buscar</span>
+      </div>
+    </nav>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+  <div class="app-modal" id="appModal">
+    <button class="close-button" onclick="closeModal()">
+      <span class="material-icons-round">close</span>
+    </button>
+    <div id="modalContent"></div>
+  </div>
+
+  <script>
+    const CATALOG_URL = "https://raw.githubusercontent.com/JesusQuijada34/catalog/refs/heads/main/repo.list";
+    const XML_PATH = "refs/heads/main/details.xml";
+    const DEFAULT_ICON = "assets/logo.png";
+
+    let allApps = [];
+    let cachedApps = [];
+    let currentTab = 'apps';
+
+    const contentArea = document.getElementById('contentArea');
+    const searchInput = document.getElementById('searchInput');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const appModal = document.getElementById('appModal');
+    const modalContent = document.getElementById('modalContent');
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const cached = localStorage.getItem('flarm_cached_apps');
+      if (cached) cachedApps = JSON.parse(cached);
+
+      await loadCatalog();
+      renderHome();
+
+      searchInput.addEventListener('input', (e) => {
+        if (e.target.value.length > 0) renderSearch(e.target.value);
+        else renderHome();
+      });
+    });
+
+    async function loadCatalog() {
+      try {
+        const res = await fetch(CATALOG_URL);
+        const txt = await res.text();
+        const repos = txt.split(',').map(x => x.trim()).filter(x => x);
+
+        const fetchedApps = await Promise.all(repos.map(fetchApp));
+
+        // Filter out null apps (invalid XMLs)
+        allApps = fetchedApps.filter(app => app !== null);
+
+        console.log(`[INFO] ${allApps.length} apps válidas de ${repos.length} repositorios`);
+
+        if (cachedApps.length === 0) updateCache();
+      } catch (e) {
+        console.error('[ERROR] Error al cargar el catálogo:', e);
+        contentArea.innerHTML = '<div class="empty-state"><span class="material-icons-round">error</span><div>Error al cargar el catálogo</div></div>';
+      }
+    }
+
+    async function fetchApp(repo) {
+      const xmlUrl = `https://raw.githubusercontent.com/JesusQuijada34/${repo}/${XML_PATH}`;
+      let app = { repo, name: "", publisher: "", version: "", author: "", platform: "", packagename: "", rate: "", correlationid: "" };
+
+      try {
+        const res = await fetch(xmlUrl);
+        if (!res.ok) {
+          console.warn(`[INVALID] ${repo}: XML no encontrado`);
+          return null;
+        }
+
+        const xml = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, "application/xml");
+
+        // Check for XML parsing errors
+        const parserError = doc.querySelector("parsererror");
+        if (parserError) {
+          console.warn(`[INVALID] ${repo}: XML mal formado`);
+          return null;
+        }
+
+        const node = doc.querySelector("app");
+        if (!node) {
+          console.warn(`[INVALID] ${repo}: Nodo <app> no encontrado`);
+          return null;
+        }
+
+        app = {
+          repo,
+          publisher: node?.querySelector("publisher")?.textContent?.trim() || "",
+          packagename: node?.querySelector("app")?.textContent?.trim() || "",
+          name: node?.querySelector("name")?.textContent?.trim() || "",
+          version: node?.querySelector("version")?.textContent?.trim() || "",
+          correlationid: node?.querySelector("correlationid")?.textContent?.trim() || "",
+          rate: node?.querySelector("rate")?.textContent?.trim() || "",
+          author: node?.querySelector("author")?.textContent?.trim() || "",
+          platform: node?.querySelector("platform")?.textContent?.trim() || "",
+        };
+
+        // Validate essential fields
+        if (!app.name || !app.publisher || !app.author || !app.packagename || !app.version || !app.correlationid || !app.rate || !app.platform) {
+          console.warn(`[INVALID] ${repo}: Faltan campos esenciales`);
+          return null;
+        }
+
+      } catch (e) {
+        console.error(`[ERROR] ${repo}: ${e.message}`);
+        return null;
+      }
+
+      app.icon = await getIconUrl(repo);
+
+      const splashUrl = await getSplashUrl(repo);
+      if (splashUrl) {
+        app.splash = splashUrl;
+        app.useBlurSplash = false;
+      } else {
+        app.splash = app.icon;
+        app.useBlurSplash = true;
+      }
+
+      if (app.platform === "Knosthalij") {
+        app.category = "Windows";
+      } else if (app.platform === "Danenone") {
+        app.category = "Linux/Mac";
+      } else if (app.platform === "AlphaCube") {
+        app.category = "Multiplataforma";
+      } else {
+        app.category = "Otros";
+      }
+
+      return app;
+    }
+
+    async function getSplashUrl(repo) {
+      const url = `https://raw.githubusercontent.com/JesusQuijada34/${repo}/main/assets/splash.png`;
+      try {
+        const res = await fetch(url, { method: 'HEAD' });
+        return res.ok ? url : null;
+      } catch { return null; }
+    }
+
+    async function getIconUrl(repo) {
+      const urls = [
+        `https://raw.githubusercontent.com/JesusQuijada34/${repo}/main/app/app-icon.ico`,
+        `https://raw.githubusercontent.com/JesusQuijada34/${repo}/main/assets/product_logo`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { method: 'HEAD' });
+          if (res.ok) return url;
+        } catch { }
+      }
+      return DEFAULT_ICON;
+    }
+
+    function updateCache() {
+      cachedApps = JSON.parse(JSON.stringify(allApps));
+      localStorage.setItem('flarm_cached_apps', JSON.stringify(cachedApps));
+      if (currentTab === 'updates') renderUpdates();
+    }
+
+    function renderHome() {
+      const featuredApps = allApps.slice(0, 3);
+      const popularApps = allApps.slice(3, 9);
+
+      const knosthalij = allApps.filter(app => app.platform === "Knosthalij");
+      const danenone = allApps.filter(app => app.platform === "Danenone");
+      const alphacube = allApps.filter(app => app.platform === "AlphaCube");
+
+      const topFree = knosthalij.length > 0 ? knosthalij.slice(0, 3) : allApps.slice(0, 3);
+      const topGrossing = danenone.length > 0 ? danenone.slice(0, 3) : allApps.slice(3, 6);
+      const topPaid = alphacube.length > 0 ? alphacube.slice(0, 3) : allApps.slice(6, 9);
+
+      let html = `
+        <div class="featured-grid">
+          ${featuredApps.map(renderFeaturedCard).join('')}
         </div>
 
-        <div class="card sidebar-card">
-          <h2>Novedades</h2>
-          <div class="news-feed">
-            <div class="news-item">
-              <strong>Nuevo Mod de Texturas</strong>
-              <small>Hace 2 horas</small>
-            </div>
-            <div class="news-item">
-              <strong>Optimización FPS v2.0</strong>
-              <small>Ayer</small>
-            </div>
-            <div class="news-item">
-              <strong>Servidor Discord</strong>
-              <small>Nuevo</small>
+        <h2 class="section-title">Aplicaciones populares</h2>
+        <div class="popular-row">
+          ${popularApps.map(renderPopularCard).join('')}
+        </div>
+
+        <h2 class="section-title">Más populares</h2>
+        <div class="ranked-container">
+          <div class="ranked-column">
+            <div class="ranked-tab active">Top gratis</div>
+            ${topFree.map((app, index) => renderRankedCard(app, index + 1)).join('')}
+          </div>
+          <div class="ranked-column">
+            <div class="ranked-tab">Top en ingresos</div>
+            ${topGrossing.map((app, index) => renderRankedCard(app, index + 1)).join('')}
+          </div>
+          <div class="ranked-column">
+            <div class="ranked-tab">Top ventas</div>
+            ${topPaid.map((app, index) => renderRankedCard(app, index + 1)).join('')}
+          </div>
+        </div>
+
+        <h2 class="section-title">Full colección</h2>
+        <div class="full-collection-grid">
+          ${allApps.map(renderFullCollectionCard).join('')}
+        </div>
+      `;
+
+      contentArea.innerHTML = html;
+    }
+
+    function renderFeaturedCard(app) {
+      return `
+        <div class="featured-card" onclick="openModal('${app.repo}')">
+          <img src="${app.splash}" class="featured-splash ${app.useBlurSplash ? 'blur-splash' : ''}" alt="${app.name}">
+          <div class="featured-info">
+            <div class="featured-name">${app.name}</div>
+            <div class="featured-meta">${app.author || app.publisher} • ${app.version || 'v1.0'} • ${app.category}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPopularCard(app) {
+      return `
+        <div class="popular-card" onclick="openModal('${app.repo}')">
+          <img src="${app.icon}" class="popular-icon" alt="${app.name}">
+          <div class="popular-name">${app.name}</div>
+          <div class="popular-rating">${app.rate || '4.5'} ★</div>
+        </div>
+      `;
+    }
+
+    function renderRankedCard(app, rank) {
+      return `
+        <div class="ranked-item" onclick="openModal('${app.repo}')">
+          <div class="rank-number">${rank}</div>
+          <img src="${app.icon}" class="ranked-icon" alt="${app.name}">
+          <div class="ranked-info">
+            <div class="ranked-name">${app.name}</div>
+            <div class="ranked-meta">${app.publisher}</div>
+            <div class="ranked-rating">${app.rate || '4.7'} ★</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFullCollectionCard(app) {
+      return `
+        <div class="collection-card" onclick="openModal('${app.repo}')">
+          <img src="${app.icon}" class="collection-icon" alt="${app.name}">
+          <div class="collection-info">
+            <div class="collection-name">${app.name}</div>
+            <div class="collection-author">@${app.author || 'JesusQuijada34'}</div>
+            <div class="collection-desc">${app.publisher} • ${app.category}</div>
+            <div class="collection-meta">${app.rate || '4.5'} ★ • ${app.version || 'v1.0'}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSearch(query) {
+      const lower = query.toLowerCase();
+      const results = allApps.filter(a =>
+        a.name.toLowerCase().includes(lower) ||
+        a.publisher.toLowerCase().includes(lower) ||
+        a.author.toLowerCase().includes(lower)
+      );
+
+      contentArea.innerHTML = `
+        <h2 class="section-title">Resultados para "${query}"</h2>
+        <div class="full-collection-grid">
+          ${results.length ? results.map(renderFullCollectionCard).join('') : '<div class="empty-state"><span class="material-icons-round">search_off</span><div>No se encontraron resultados</div></div>'}
+        </div>
+      `;
+    }
+
+    function renderUpdates() {
+      const updates = allApps.filter(app => {
+        const cached = cachedApps.find(c => c.repo === app.repo);
+        return !cached || cached.version !== app.version;
+      });
+
+      if (updates.length === 0) {
+        contentArea.innerHTML = `
+          <div class="empty-state">
+            <span class="material-icons-round">check_circle</span>
+            <div>Todo está actualizado</div>
+          </div>
+        `;
+        return;
+      }
+
+      contentArea.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 class="section-title" style="margin:0;">Actualizaciones (${updates.length})</h2>
+          <button class="install-button" onclick="updateCache()">Actualizar todo</button>
+        </div>
+        <div class="full-collection-grid">
+          ${updates.map(renderFullCollectionCard).join('')}
+        </div>
+      `;
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => el.classList.remove('active'));
+
+      if (tab === 'search') {
+        searchInput.focus();
+        return;
+      }
+
+      if (tab === 'updates') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+          if (el.textContent.includes('Actualizaciones')) el.classList.add('active');
+        });
+        renderUpdates();
+        return;
+      }
+
+      document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+        if (el.textContent.includes('Apps') && !el.textContent.includes('Actualizaciones')) el.classList.add('active');
+      });
+      renderHome();
+    }
+
+    function openModal(repo) {
+      const app = allApps.find(a => a.repo === repo);
+      if (!app) return;
+
+      modalContent.innerHTML = `
+        <div class="modal-header">
+          <img src="${app.icon}" class="modal-icon" alt="${app.name}">
+          <div class="modal-info">
+            <div class="modal-title">${app.name}</div>
+            <div class="modal-publisher">${app.publisher}</div>
+            <button class="install-button" onclick="installApp('${app.repo}', '${app.author}')">Instalar</button>
+            <div class="modal-stats">
+              <div class="stat">
+                <div class="stat-value">4.5 ★</div>
+                <div class="stat-label">Valoración</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">${app.version || '1.0'}</div>
+                <div class="stat-label">Versión</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">${app.category}</div>
+                <div class="stat-label">Plataforma</div>
+              </div>
             </div>
           </div>
         </div>
-      </aside>
-
-      <!-- Right Content (Upload Center & Library) -->
-      <div class="info-content">
-        <!-- New Upload Section -->
-        <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
-          Centro de Carga (Comunidad)
-        </h2>
-
-        <div class="upload-center-card">
-          <div class="upload-header">
-            <span class="material-icons-round">cloud_upload</span>
-            <h3>Subir Nuevo Proyecto / Archivo</h3>
-          </div>
-          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Comparte tus emuladores, roms, o aplicaciones compiladas con la comunidad.
-          </p>
-
-          <div class="upload-form">
-            <input type="text" class="chat-input" placeholder="Nombre del Proyecto"
-              style="margin-bottom: 10px; width: 100%;">
-            <select class="chat-input" style="margin-bottom: 10px; width: 100%;">
-              <option>Tipo: Emulador</option>
-              <option>Tipo: Juego / ROM</option>
-              <option>Tipo: Herramienta (App)</option>
-            </select>
-
-            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-              <span class="material-icons-round" style="font-size: 32px; color: var(--accent-color);">folder_open</span>
-              <span>Arrastra archivos aquí o haz clic para buscar</span>
-              <input type="file" id="fileInput" hidden>
-            </div>
-
-            <button class="action-btn" style="width: 100%; margin-top: 10px;" onclick="uploadProject()">
-              Publicar en la Tienda
-            </button>
-          </div>
-        </div>
-
-        <!-- Recent Uploads List -->
-        <h2 style="margin-top: 30px; margin-bottom: 15px; font-size: 1.2rem;">
-          Archivos Recientes de Usuarios
-        </h2>
-
-        <div class="community-library-list">
-          <!-- Item 1 -->
-          <div class="library-item">
-            <div class="lib-icon"><span class="material-icons-round">android</span></div>
-            <div class="lib-info">
-              <div class="lib-title">Super Emulator v2.4.apk</div>
-              <div class="lib-meta">Subido por @teczervideo • 45MB</div>
-            </div>
-            <button class="mini-btn">Descargar</button>
-          </div>
-          <!-- Item 2 -->
-          <div class="library-item">
-            <div class="lib-icon"><span class="material-icons-round">extension</span></div>
-            <div class="lib-info">
-              <div class="lib-title">Mario64_Mod_HD.zip</div>
-              <div class="lib-meta">Subido por @guestUser • 120MB</div>
-            </div>
-            <button class="mini-btn">Descargar</button>
-          </div>
-          <!-- Item 3 -->
-          <div class="library-item">
-            <div class="lib-icon"><span class="material-icons-round">code</span></div>
-            <div class="lib-info">
-              <div class="lib-title">Python_Compiler_Portable.exe</div>
-              <div class="lib-meta">Subido por @devMaster • 15MB</div>
-            </div>
-            <button class="mini-btn">Descargar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section: Games Store -->
-  <section id="games" class="section">
-    <div class="card" style="border-color: var(--accent-color);">
-      <h1 style="color: var(--accent-color);">Catálogo de Juegos</h1>
-      <p>Descubre títulos optimizados y exclusivos.</p>
-    </div>
-
-    <div class="games-grid">
-      <!-- Game 1 -->
-      <div class="game-card">
-        <img src="https://via.placeholder.com/300x400/000000/4169e1?text=Cyber+Mod" alt="Game 1">
-        <div class="game-overlay">
-          <h3 style="color:#fff">Cyber Mod 2077</h3>
-          <p style="color:#ddd">Pack completo de texturas HD.</p>
-          <button
-            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
-        </div>
-      </div>
-      <!-- Game 2 -->
-      <div class="game-card">
-        <img src="https://via.placeholder.com/300x400/000000/dc143c?text=Fantasy+RPG" alt="Game 2">
-        <div class="game-overlay">
-          <h3 style="color:#fff">Fantasy RPG Mod</h3>
-          <p style="color:#ddd">Expansión de mapas y quests.</p>
-          <button
-            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
-        </div>
-      </div>
-      <!-- Game 3 -->
-      <div class="game-card">
-        <img src="https://via.placeholder.com/300x400/000000/ffd700?text=Racer+X" alt="Game 3">
-        <div class="game-overlay">
-          <h3 style="color:#fff">Racer X Enhanced</h3>
-          <p style="color:#ddd">Físicas realistas y nuevos autos.</p>
-          <button
-            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section: Programming & AI -->
-  <section id="programming" class="section">
-    <div class="prog-header">
-      <div>
-        <h1>Zona de Desarrollo (Open Source)</h1>
-        <p>Crea, comparte y colabora. Código libre para todos.</p>
-        <div class="platform-icons">
-          <span class="material-icons-round" title="Windows">window</span>
-          <span class="material-icons-round" title="Linux">terminal</span>
-          <span class="material-icons-round" title="MacOS">laptop_mac</span>
-          <span class="material-icons-round" title="Android">android</span>
-        </div>
-      </div>
-      <!-- Upload Widget (Orange) -->
-      <div id="upload-widget" class="upload-widget">
-        <span class="material-icons-round" style="font-size:32px;">cloud_upload</span>
-        <div>Subir Proyecto</div>
-      </div>
-    </div>
-
-    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem;">
-      <!-- AI Area -->
-      <div class="card">
-        <h2><span class="material-icons-round" style="vertical-align:middle;">smart_toy</span> Asistente IA de
-          Desarrollo</h2>
-        <p>Describe tu idea y generaremos la estructura por ti. (Máx 2 diarios)</p>
-
-        <div class="ai-chat-container">
-          <div id="chat-messages" class="chat-messages">
-            <!-- Messages go here -->
-            <div class="message ai"
-              style="background:var(--bg-secondary); padding:10px; border-radius:8px; color:var(--text-primary);">
-              <strong>Antigravity AI:</strong> Hola, soy tu asistente de código. Cuéntame tu idea para una App o Juego.
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="modal-section-title">Sobre esta app</div>
+            <div class="modal-description">
+              <strong>Autor:</strong> ${app.author}<br>
+              <strong>Publisher:</strong> ${app.publisher}<br>
+              <strong>Plataforma:</strong> ${app.platform}<br>
+              <strong>Licencia:</strong> ${app.rate || 'Gratis'}<br>
+              <strong>Package:</strong> ${app.packagename}
             </div>
           </div>
-          <div class="chat-input-area">
-            <input type="text" id="chat-input" class="chat-input"
-              placeholder="Escribe tu idea (ej: Juego de plataformas en JS)...">
-            <button id="send-btn" class="action-btn">Generar</button>
-          </div>
         </div>
-      </div>
+      `;
 
-      <!-- Consent / Stats / Notifications -->
-      <div class="card">
-        <h3>Colaboración</h3>
-        <p>Permite que otros mejoren tu código.</p>
-        <button class="consent-btn" style="width:100%; margin-top:1rem;">
-          <span class="material-icons-round" style="vertical-align:middle;">how_to_reg</span> Dar Consentimiento
-        </button>
+      modalOverlay.classList.add('show');
+      appModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
 
-        <hr style="border:0; border-top:1px solid var(--border-color); margin: 2rem 0;">
+    function closeModal() {
+      modalOverlay.classList.remove('show');
+      appModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
 
-        <h3>Base de Datos (Notificaciones)</h3>
-        <div id="notification-feed" class="notification-area">
-          <!-- Populated by JS -->
-          Cargando changelog...
-        </div>
-        <button class="action-btn" onclick="subscribeToUpdates()"
-          style="width:100%; margin-top:10px; background:var(--bg-secondary); border:1px solid var(--accent-color);">
-          <span class="material-icons-round" style="vertical-align:middle; font-size:16px">notifications</span>
-          Suscribirse
-        </button>
-      </div>
-    </div>
-  </section>
+    function installApp(repo, author) {
+      window.location.href = `flarmstore://${encodeURIComponent(author || 'unknown')}.${encodeURIComponent(repo)}`;
+    }
 
-  <!-- Section: Shortcuts -->
-  <section id="shortcuts" class="section">
-    <h1 style="text-align:center;">Acceso Rápido</h1>
-    <div class="shortcuts-grid">
-      <div class="card shortcut-card" onclick="goToSection('info')">
-        <span class="material-icons-round" style="font-size:48px; color:var(--accent-color);">info</span>
-        <h3>Información</h3>
-        <p>Novedades y Noticias</p>
-      </div>
-      <div class="card shortcut-card" onclick="goToSection('games')">
-        <span class="material-icons-round" style="font-size:48px; color:var(--accent-color);">sports_esports</span>
-        <h3>Juegos</h3>
-        <p>Tienda y Mods</p>
-      </div>
-      <div class="card shortcut-card" onclick="goToSection('programming')">
-        <span class="material-icons-round" style="font-size:48px; color:var(--accent-color);">code</span>
-        <h3>Programación</h3>
-        <p>Herramientas IA y Dev</p>
-      </div>
-      <div class="card shortcut-card" onclick="window.open('https://github.com/teczervideo', '_blank')">
-        <span class="material-icons-round" style="font-size:48px; color:var(--accent-color);">account_circle</span>
-        <h3>Mi GitHub</h3>
-        <p>@teczervideo</p>
-      </div>
-    </div>
-  </section>
-
-  <script src="js/app.js?v=2.3"></script>
+    window.addEventListener('resize', () => {
+      if (currentTab === 'apps') renderHome();
+    });
+  </script>
 </body>
 
 </html>
