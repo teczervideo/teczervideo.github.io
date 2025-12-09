@@ -65,19 +65,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             notifArea.innerHTML = '<div style="color:#888;">Cargando notificaciones...</div>';
+
+            // Check if running on file protocol (CORS limitation)
+            if (window.location.protocol === 'file:') {
+                throw new Error("Local filesystem detected (CORS)");
+            }
+
             const res = await fetch(NOTIF_URL);
             if (!res.ok) throw new Error("No DB connection");
 
             const data = await res.json();
             renderNotifications(data);
         } catch (e) {
-            console.error(e);
-            notifArea.innerHTML = '<div style="color:#d32f2f;">Error conectando a la base de datos de notificaciones.</div>';
+            console.warn("Fetch failed or local mode:", e);
+            // Fallback for local testing or error
+            renderNotifications([
+                {
+                    date: "2025-12-09",
+                    type: "feature",
+                    title: "Diseño Actualizado",
+                    message: "Nuevo tema oscuro y optimizaciones para Opera GX."
+                },
+                {
+                    date: "2025-12-09",
+                    type: "fix",
+                    title: "Modo Local",
+                    message: "Estás viendo datos locales (Base de datos offline)."
+                }
+            ]);
         }
     }
 
     function renderNotifications(data) {
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             notifArea.innerHTML = '<div>No hay nuevas notificaciones.</div>';
             return;
         }
