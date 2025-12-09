@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "date": "2025-12-09",
+        "type": "feature",
+        "title": "Nuevo Diseño Dark Mode",
+        "message": "Se ha implementado un diseño oscuro general para mejorar la experiencia visual."
+    },
+    {
+        "id": 2,
+        "date": "2025-12-08",
+        "type": "fix",
+        "title": "Corrección de Navegación",
+        "message": "Solucionado el error que impedía cambiar entre pestañas correctamente."
+    },
+    {
+        "id": 3,
+        "date": "2025-12-07",
+        "type": "update",
+        "title": "Optimización de Carga",
+        "message": "Mejorada la velocidad de carga en dispositivos móviles."
+    }
+]

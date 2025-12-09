@@ -1,30 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeczerVideo | Modding & Development</title>
-  
+
   <!-- SEO -->
   <meta name="description" content="Comunidad de modding, desarrollo de juegos y foro de información.">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-  
+
   <!-- Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body class="theme-info">
 
   <!-- Background Animated -->
   <div class="bg-animation">
-    <div class="bg-shape" style="top: 20%; left: 10%; width: 300px; height: 300px; background: var(--accent-color);"></div>
-    <div class="bg-shape" style="top: 60%; right: 10%; width: 400px; height: 400px; background: var(--text-secondary); animation-delay: -5s;"></div>
+    <div class="bg-shape" style="top: 20%; left: 10%; width: 300px; height: 300px; background: var(--accent-color);">
+    </div>
+    <div class="bg-shape"
+      style="top: 60%; right: 10%; width: 400px; height: 400px; background: var(--text-secondary); animation-delay: -5s;">
+    </div>
   </div>
 
   <!-- Navigation -->
@@ -42,10 +47,11 @@
       <p>El centro definitivo para modificación de juegos, noticias y desarrollo.</p>
       <div style="margin-top:2rem; border-left: 4px solid var(--accent-color); padding-left: 1rem;">
         <h3>Sobre Nosotros</h3>
-        <p>Somos una comunidad dedicada a llevar el gaming al siguiente nivel. Exploramos los límites del software y hardware.</p>
+        <p>Somos una comunidad dedicada a llevar el gaming al siguiente nivel. Exploramos los límites del software y
+          hardware.</p>
       </div>
     </div>
-    
+
     <div class="card">
       <h2>Novedades</h2>
       <p>Actualizaciones recientes sobre mods y parches de rendimiento.</p>
@@ -77,25 +83,28 @@
         <div class="game-overlay">
           <h3 style="color:#fff">Cyber Mod 2077</h3>
           <p style="color:#ddd">Pack completo de texturas HD.</p>
-          <button style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
+          <button
+            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
         </div>
       </div>
-       <!-- Game 2 -->
-       <div class="game-card">
+      <!-- Game 2 -->
+      <div class="game-card">
         <img src="https://via.placeholder.com/300x400/000000/dc143c?text=Fantasy+RPG" alt="Game 2">
         <div class="game-overlay">
           <h3 style="color:#fff">Fantasy RPG Mod</h3>
           <p style="color:#ddd">Expansión de mapas y quests.</p>
-          <button style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
+          <button
+            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
         </div>
       </div>
-       <!-- Game 3 -->
-       <div class="game-card">
+      <!-- Game 3 -->
+      <div class="game-card">
         <img src="https://via.placeholder.com/300x400/000000/ffd700?text=Racer+X" alt="Game 3">
         <div class="game-overlay">
           <h3 style="color:#fff">Racer X Enhanced</h3>
           <p style="color:#ddd">Físicas realistas y nuevos autos.</p>
-          <button style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
+          <button
+            style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Comprar</button>
         </div>
       </div>
     </div>
@@ -107,6 +116,12 @@
       <div>
         <h1>Zona de Desarrollo (Open Source)</h1>
         <p>Crea, comparte y colabora. Código libre para todos.</p>
+        <div class="platform-icons">
+          <span class="material-icons-round" title="Windows">window</span>
+          <span class="material-icons-round" title="Linux">terminal</span>
+          <span class="material-icons-round" title="MacOS">laptop_mac</span>
+          <span class="material-icons-round" title="Android">android</span>
+        </div>
       </div>
       <!-- Upload Widget (Orange) -->
       <div id="upload-widget" class="upload-widget">
@@ -118,24 +133,27 @@
     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem;">
       <!-- AI Area -->
       <div class="card">
-        <h2><span class="material-icons-round" style="vertical-align:middle;">smart_toy</span> Asistente IA de Desarrollo</h2>
+        <h2><span class="material-icons-round" style="vertical-align:middle;">smart_toy</span> Asistente IA de
+          Desarrollo</h2>
         <p>Describe tu idea y generaremos la estructura por ti. (Máx 2 diarios)</p>
-        
+
         <div class="ai-chat-container">
           <div id="chat-messages" class="chat-messages">
             <!-- Messages go here -->
-            <div class="message ai" style="background:var(--bg-secondary); padding:10px; border-radius:8px; color:var(--text-primary);">
+            <div class="message ai"
+              style="background:var(--bg-secondary); padding:10px; border-radius:8px; color:var(--text-primary);">
               <strong>Antigravity AI:</strong> Hola, soy tu asistente de código. Cuéntame tu idea para una App o Juego.
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Escribe tu idea (ej: Juego de plataformas en JS)...">
-            <button id="send-btn" class="chat-btn">Generar</button>
+            <input type="text" id="chat-input" class="chat-input"
+              placeholder="Escribe tu idea (ej: Juego de plataformas en JS)...">
+            <button id="send-btn" class="action-btn">Generar</button>
           </div>
         </div>
       </div>
 
-      <!-- Consent / Stats -->
+      <!-- Consent / Stats / Notifications -->
       <div class="card">
         <h3>Colaboración</h3>
         <p>Permite que otros mejoren tu código.</p>
@@ -145,10 +163,16 @@
 
         <hr style="border:0; border-top:1px solid var(--border-color); margin: 2rem 0;">
 
-        <h3>Tus Proyectos</h3>
-        <div style="font-size:0.9rem; color:var(--text-secondary);">
-          No has subido proyectos aún.
+        <h3>Base de Datos (Notificaciones)</h3>
+        <div id="notification-feed" class="notification-area">
+          <!-- Populated by JS -->
+          Cargando changelog...
         </div>
+        <button class="action-btn" onclick="subscribeToUpdates()"
+          style="width:100%; margin-top:10px; background:var(--bg-secondary); border:1px solid var(--accent-color);">
+          <span class="material-icons-round" style="vertical-align:middle; font-size:16px">notifications</span>
+          Suscribirse
+        </button>
       </div>
     </div>
   </section>
@@ -182,4 +206,5 @@
 
   <script src="js/app.js"></script>
 </body>
+
 </html>
