@@ -725,6 +725,134 @@
         color: var(--accent-color);
       }
     }
+
+    /* --- UPLOAD PROJECT SECTION STYLES --- */
+    .upload-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .upload-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .upload-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sidebar-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .news-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .news-item:hover {
+      border-color: var(--accent-color);
+      background: rgba(30, 144, 255, 0.05);
+    }
+
+    .news-title {
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .upload-main-card {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid var(--accent-color);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 0 30px rgba(30, 144, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.2);
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin: 24px 0;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .drop-zone:hover {
+      border-color: var(--accent-color);
+      background: rgba(30, 144, 255, 0.05);
+    }
+
+    .drop-icon {
+      font-size: 48px;
+      color: var(--accent-color);
+      margin-bottom: 16px;
+    }
+
+    .recent-files-list {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
   </style>
 
 <body>
