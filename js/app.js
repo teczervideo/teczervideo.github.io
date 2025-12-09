@@ -414,38 +414,226 @@ function renderOptimizations() {
 
     <div class="opt-grid">
        <!-- Intel -->
-       <div class="opt-card brand-intel">
+       <div class="opt-card brand-intel" onclick="showOptimizationGuide('intel')">
          <span class="material-icons-round opt-icon">memory</span>
          <div class="opt-title">Intel® HD Graphics</div>
          <div class="opt-desc">Drivers modificados y configs para UHD 620/630. Aumenta FPS en laptops.</div>
-         <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Intel-Optimization-Guide', '_blank')">Ver Guía</button>
+         <button class="opt-btn">Ver Guía</button>
        </div>
        
        <!-- AMD -->
-       <div class="opt-card brand-amd">
+       <div class="opt-card brand-amd" onclick="showOptimizationGuide('amd')">
          <span class="material-icons-round opt-icon">grid_view</span>
          <div class="opt-title">AMD Radeon™ Tweaks</div>
          <div class="opt-desc">Desbloquea rendimiento en APUs Ryzen y GPUs Radeon Legacy.</div>
-         <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/AMD-Tweaks', '_blank')">Ver Guía</button>
+         <button class="opt-btn">Ver Guía</button>
        </div>
        
        <!-- Nvidia -->
-       <div class="opt-card brand-nvidia">
+       <div class="opt-card brand-nvidia" onclick="showOptimizationGuide('nvidia')">
          <span class="material-icons-round opt-icon">remove_red_eye</span>
          <div class="opt-title">Nvidia Control Panel</div>
          <div class="opt-desc">Configuración "High Performance" y debloat de drivers.</div>
-         <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Nvidia-Low-End', '_blank')">Ver Guía</button>
+         <button class="opt-btn">Ver Guía</button>
        </div>
        
        <!-- Generic / Windows -->
-       <div class="opt-card brand-generic">
+       <div class="opt-card brand-generic" onclick="showOptimizationGuide('windows')">
          <span class="material-icons-round opt-icon">window</span>
          <div class="opt-title">Windows Debloat</div>
          <div class="opt-desc">Scripts universales para eliminar telemetría y procesos basura.</div>
-         <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Windows-Optimization', '_blank')">Ver Guía</button>
+         <button class="opt-btn">Ver Guía</button>
        </div>
     </div>
   `;
+}
+
+function showOptimizationGuide(type) {
+    const guides = {
+        intel: {
+            title: 'Intel® HD Graphics - Guía de Optimización',
+            icon: 'memory',
+            color: '#0071c5',
+            steps: [
+                {
+                    title: '1. Actualizar Drivers Intel',
+                    content: 'Descarga los últimos drivers desde Intel.com o usa Intel Driver & Support Assistant. Evita drivers genéricos de Windows Update.'
+                },
+                {
+                    title: '2. Panel de Control Intel HD Graphics',
+                    content: `
+                        <strong>Configuración 3D:</strong><br>
+                        • Calidad de imagen: Rendimiento<br>
+                        • Filtrado anisotrópico: Aplicación controlada<br>
+                        • Sincronización vertical: Desactivar<br>
+                        • Conservación de energía: Rendimiento máximo
+                    `
+                },
+                {
+                    title: '3. Configuración de Energía',
+                    content: 'En Panel de Control > Opciones de energía, selecciona "Alto rendimiento". En configuración avanzada, establece el estado mínimo del procesador en 100%.'
+                },
+                {
+                    title: '4. Optimización de VRAM',
+                    content: 'En BIOS/UEFI, aumenta la memoria compartida de gráficos (DVMT) a 512MB o el máximo disponible. Esto mejora significativamente el rendimiento en juegos.'
+                },
+                {
+                    title: '5. Desactivar DVR de Xbox',
+                    content: 'Presiona Win+G, ve a Configuración y desactiva "Grabar en segundo plano mientras juego". Esto libera recursos de GPU.'
+                }
+            ]
+        },
+        amd: {
+            title: 'AMD Radeon™ - Guía de Optimización',
+            icon: 'grid_view',
+            color: '#ed1c24',
+            steps: [
+                {
+                    title: '1. AMD Software Adrenalin',
+                    content: 'Descarga la última versión de AMD Software desde AMD.com. Usa DDU (Display Driver Uninstaller) antes de instalar para limpiar drivers antiguos.'
+                },
+                {
+                    title: '2. Configuración de Gráficos',
+                    content: `
+                        <strong>En AMD Software:</strong><br>
+                        • Anti-Aliasing: Desactivar o controlado por aplicación<br>
+                        • Filtrado anisotrópico: Desactivar<br>
+                        • Sincronización vertical: Siempre desactivado<br>
+                        • Tessellation: AMD optimizada<br>
+                        • FreeSync: Activar si tu monitor lo soporta
+                    `
+                },
+                {
+                    title: '3. Radeon Chill',
+                    content: 'Activa Radeon Chill para reducir temperatura y consumo. Establece FPS mínimo en 30 y máximo en 60 para juegos casuales, o 144+ para competitivos.'
+                },
+                {
+                    title: '4. Radeon Boost',
+                    content: 'Activa Radeon Boost para aumentar FPS dinámicamente durante movimientos rápidos. Establece resolución mínima en 85-90% para mantener calidad visual.'
+                },
+                {
+                    title: '5. Overclocking Seguro',
+                    content: 'En AMD Software > Performance > Tuning, activa "Tuning Control" y aumenta Power Limit a +20%. Incrementa GPU Clock en pasos de 25MHz hasta encontrar estabilidad.'
+                }
+            ]
+        },
+        nvidia: {
+            title: 'Nvidia Control Panel - Guía de Optimización',
+            icon: 'remove_red_eye',
+            color: '#76b900',
+            steps: [
+                {
+                    title: '1. Drivers GeForce',
+                    content: 'Usa GeForce Experience para mantener drivers actualizados. Selecciona instalación "Limpia" para evitar conflictos. Considera drivers Studio para trabajo creativo.'
+                },
+                {
+                    title: '2. Panel de Control NVIDIA',
+                    content: `
+                        <strong>Configuración 3D Global:</strong><br>
+                        • Modo de administración de energía: Preferir rendimiento máximo<br>
+                        • Sincronización vertical: Desactivada<br>
+                        • Renderizado de fotogramas máximo: 1<br>
+                        • Filtrado de textura - Calidad: Alto rendimiento<br>
+                        • Suavizado - Modo: Controlado por aplicación
+                    `
+                },
+                {
+                    title: '3. PhysX y CUDA',
+                    content: 'En Panel de Control NVIDIA > Configurar PhysX, selecciona tu GPU NVIDIA como procesador PhysX. Esto descarga trabajo de la CPU.'
+                },
+                {
+                    title: '4. G-SYNC / Adaptive Sync',
+                    content: 'Si tu monitor soporta G-SYNC, actívalo en Panel de Control NVIDIA > Configurar G-SYNC. Esto elimina tearing sin penalización de rendimiento.'
+                },
+                {
+                    title: '5. NVIDIA Reflex',
+                    content: 'En juegos compatibles, activa NVIDIA Reflex para reducir latencia de entrada. Ideal para shooters competitivos como Valorant, Apex, Fortnite.'
+                }
+            ]
+        },
+        windows: {
+            title: 'Windows - Optimización General',
+            icon: 'window',
+            color: '#00a4ef',
+            steps: [
+                {
+                    title: '1. Desactivar Programas de Inicio',
+                    content: 'Presiona Ctrl+Shift+Esc > Inicio. Desactiva programas innecesarios como Spotify, Discord, Adobe Creative Cloud que consumen RAM y CPU en segundo plano.'
+                },
+                {
+                    title: '2. Modo de Juego de Windows',
+                    content: 'Ve a Configuración > Juegos > Modo de juego y actívalo. Esto prioriza recursos para juegos y desactiva Windows Update durante sesiones de juego.'
+                },
+                {
+                    title: '3. Desactivar Efectos Visuales',
+                    content: `
+                        Panel de Control > Sistema > Configuración avanzada del sistema > Rendimiento:<br>
+                        • Selecciona "Ajustar para obtener el mejor rendimiento"<br>
+                        • O personaliza dejando solo "Suavizar bordes de fuentes en pantalla"
+                    `
+                },
+                {
+                    title: '4. Limpiar Archivos Temporales',
+                    content: 'Presiona Win+R, escribe "temp" y elimina todo. Repite con "%temp%" y "prefetch". Usa Liberador de espacio en disco para limpiar archivos del sistema.'
+                },
+                {
+                    title: '5. Desactivar Telemetría',
+                    content: `
+                        <strong>Servicios a desactivar (services.msc):</strong><br>
+                        • DiagTrack (Connected User Experiences and Telemetry)<br>
+                        • dmwappushservice (WAP Push Message Routing)<br>
+                        • SysMain (Superfetch - opcional)<br>
+                        • Windows Search (si no lo usas)
+                    `
+                },
+                {
+                    title: '6. Optimizar SSD/HDD',
+                    content: 'Para SSD: Desactiva desfragmentación automática. Para HDD: Desfragmenta mensualmente. Asegúrate de tener al menos 15% de espacio libre para rendimiento óptimo.'
+                }
+            ]
+        }
+    };
+
+    const guide = guides[type];
+    if (!guide) return;
+
+    contentArea.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <button class="install-button" onclick="renderOptimizations()" style="padding: 10px 20px;">
+                <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">arrow_back</span>
+                Volver a Optimizaciones
+            </button>
+        </div>
+
+        <h2 class="section-title">
+            <span class="material-icons-round" style="color:${guide.color}; margin-right:10px;">${guide.icon}</span>
+            ${guide.title}
+        </h2>
+
+        <div style="display: grid; gap: 24px; margin-top: 30px;">
+            ${guide.steps.map(step => `
+                <div class="upload-main-card" style="border-left: 4px solid ${guide.color};">
+                    <h3 style="color: ${guide.color}; margin-bottom: 15px; font-size: 1.2rem;">
+                        ${step.title}
+                    </h3>
+                    <div style="color: var(--text-secondary); line-height: 1.8;">
+                        ${step.content}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+
+        <div style="margin-top: 40px; padding: 24px; background: rgba(30, 144, 255, 0.1); border-radius: 12px; border: 1px solid var(--accent-color);">
+            <h3 style="color: var(--accent-color); margin-bottom: 10px;">
+                <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">info</span>
+                Nota Importante
+            </h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                Estas optimizaciones pueden variar según tu hardware específico. Siempre crea un punto de restauración de Windows antes de hacer cambios importantes. 
+                Si experimentas problemas, revierte los cambios uno por uno para identificar la causa.
+            </p>
+        </div>
+    `;
 }
 
 function switchTab(tab) {
