@@ -1086,51 +1086,304 @@
       if (currentTab === 'updates') renderUpdates();
     }
 
-    function renderHome() {
-      const featuredApps = allApps.slice(0, 3);
-      const popularApps = allApps.slice(3, 9);
+    // --- DATA & STATE ---
+    // Variables initialized at top, so we use them directly.
 
-      const knosthalij = allApps.filter(app => app.platform === "Knosthalij");
-      const danenone = allApps.filter(app => app.platform === "Danenone");
-      const alphacube = allApps.filter(app => app.platform === "AlphaCube");
+    // --- INITIALIZATION ---
+    window.onload = async () => {
+      // Load Catalog from GitHub
+      try {
+        const repoList = await fetch(CATALOG_URL).then(r => r.text());
+        const repos = repoList.split('\n').filter(r => r.trim());
 
-      const topFree = knosthalij.length > 0 ? knosthalij.slice(0, 3) : allApps.slice(0, 3);
-      const topGrossing = danenone.length > 0 ? danenone.slice(0, 3) : allApps.slice(3, 6);
-      const topPaid = alphacube.length > 0 ? alphacube.slice(0, 3) : allApps.slice(6, 9);
+        const promises = repos.map(repo => fetchAppDetails(repo));
+        const fetchedApps = (await Promise.all(promises)).filter(a => a);
 
-      let html = `
-        <div class="featured-grid">
-          ${featuredApps.map(renderFeaturedCard).join('')}
-        </div>
+        // Load User Uploads from LocalStorage
+        const userUploads = JSON.parse(localStorage.getItem('tstore_uploaded_games') || '[]');
 
-        <h2 class="section-title">Aplicaciones populares</h2>
-        <div class="popular-row">
-          ${popularApps.map(renderPopularCard).join('')}
-        </div>
+        // Merge Catalog + User Uploads
+        allApps = [...userUploads, ...fetchedApps];
+        cachedApps = JSON.parse(localStorage.getItem('flarm_cached_apps') || '[]');
 
-        <h2 class="section-title">Más populares</h2>
-        <div class="ranked-container">
-          <div class="ranked-column">
-            <div class="ranked-tab active">Top gratis</div>
-            ${topFree.map((app, index) => renderRankedCard(app, index + 1)).join('')}
-          </div>
-          <div class="ranked-column">
-            <div class="ranked-tab">Top en ingresos</div>
-            ${topGrossing.map((app, index) => renderRankedCard(app, index + 1)).join('')}
-          </div>
-          <div class="ranked-column">
-            <div class="ranked-tab">Top ventas</div>
-            ${topPaid.map((app, index) => renderRankedCard(app, index + 1)).join('')}
-          </div>
-        </div>
+      } catch (e) {
+        console.error("Error loading catalog:", e);
+        // Fallback to minimal state or cached
+      }
 
-        <h2 class="section-title">Full colección</h2>
+      renderGameStore(); // Default view
+    };
+
+    // --- RENDERING VIEWS ---
+
+    function renderGameStore() {
+      // Filter logic similar to renderHome but customized for "Tienda de Juegos"
+      contentArea.innerHTML = `
+        <h2 class="section-title">Tienda de Juegos & Apps</h2>
+        
+        <!-- User Uploads Highlight -->
+        ${renderUserUploadsSection()}
+
+        <h2 class="section-title">Catálogo Oficial</h2>
         <div class="full-collection-grid">
           ${allApps.map(renderFullCollectionCard).join('')}
         </div>
       `;
+    }
 
-      contentArea.innerHTML = html;
+    function renderUserUploadsSection() {
+      const userUploads = allApps.filter(a => a.isUserUpload);
+      if (userUploads.length === 0) return '';
+
+      return `
+            <div style="margin-bottom: 30px;">
+                <h3 class="sidebar-title" style="margin-bottom:15px; font-size:1.1rem; color:var(--accent-color);">Subidos por la Comunidad (Recientes)</h3>
+                <div class="featured-grid">
+                    ${userUploads.map(renderFeaturedCard).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderUpload() {
+      contentArea.innerHTML = `
+        <div class="upload-layout">
+            <!-- Sidebar with Info -->
+            <div class="upload-sidebar">
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Publicar en la Tienda</div>
+                    <div class="sidebar-desc">
+                        Sube tus juegos, ROMs o aplicaciones. Los archivos se verificarán antes de ser visibles globalmente (Simulación).
+                    </div>
+                </div>
+                
+                <div class="sidebar-card" id="paymentInfoCard" style="display:none; border-color:#00e676;">
+                    <div class="sidebar-title" style="color:#00e676;">Datos de Pago Móvil</div>
+                    <div class="sidebar-desc" style="color:#fff;">
+                        <strong>Banco:</strong> Venezuela (0102)<br>
+                        <strong>Teléfono:</strong> 0412-123-4567<br>
+                        <strong>C.I:</strong> 12.345.678<br>
+                        <em style="font-size:0.8em; color:#aaa;">*Se cobrará una comisión del 5% por venta.*</em>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Upload Form -->
+            <div class="upload-main">
+                <h2 class="section-title" style="margin-top:0;">Subir Nuevo Archivo</h2>
+                
+                <div class="upload-main-card">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Juego / Archivo</label>
+                        <input type="text" id="upName" class="form-input" placeholder="Ej: God of War - Optimizado">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Desarrollador / Autor</label>
+                        <input type="text" id="upAuthor" class="form-input" placeholder="Tu nombre o estudio">
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Archivo</label>
+                            <select id="upType" class="form-input">
+                                <option value="Juego PC">Juego PC (.exe)</option>
+                                <option value="ROM">ROM (.gba, .nds, .nes)</option>
+                                <option value="ISO (Consola)">ISO (PS2, PSP, Wii)</option>
+                                <option value="Aplicación">Aplicación (.apk, .exe)</option>
+                                <option value="Mod">Mod / Parche</option>
+                                <option value="Otro">Otro (.rar, .zip)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Calidad / Estado</label>
+                            <select id="upQuality" class="form-input">
+                                <option>Estable (Release)</option>
+                                <option>Beta / Testing</option>
+                                <option>Early Access</option>
+                                <option>Modificado / Hack</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                        <div class="form-group">
+                            <label class="form-label">Precio ($)</label>
+                            <input type="number" id="upPrice" class="form-input" value="0" min="0" step="0.01" onchange="checkPrice(this)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Peso (Automático)</label>
+                            <input type="text" id="upSize" class="form-input" value="0 MB" readonly style="background:rgba(255,255,255,0.05); color:#888;">
+                        </div>
+                    </div>
+                    
+                    <div id="paymentMethods" class="form-group" style="display:none; background:rgba(0,230,118,0.1); padding:15px; border-radius:8px; border:1px dashed #00e676;">
+                        <label class="form-label" style="color:#00e676;">Métodos de Pago Aceptados</label>
+                        <select class="form-input">
+                            <option>Pago Móvil (Venezuela)</option>
+                            <option>Binance Pay</option>
+                            <option>PayPal</option>
+                            <option>Zinli</option>
+                        </select>
+                        <div style="margin-top:10px; font-size:0.85rem; color:#ccc;">
+                            Tus ganancias se enviarán a través de este método. Configura tus datos en el perfil.
+                        </div>
+                    </div>
+
+                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                        <span class="material-icons-round drop-icon">cloud_upload</span>
+                        <div style="font-weight:600; margin-bottom:4px;" id="dropText">Click para seleccionar archivo</div>
+                        <div class="sidebar-desc">Detectaremos el peso automáticamente.</div>
+                        <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(this)">
+                    </div>
+
+                    <button class="install-button" style="width:100%; padding:16px; font-size:1.1rem;" onclick="handleRealUpload()">
+                        <span class="material-icons-round" style="vertical-align:middle; margin-right:8px;">publish</span>
+                        Publicar en la Tienda
+                    </button>
+                    <p style="text-align:center; margin-top:10px; font-size:0.8rem; color:#666;">Al publicar aceptas los términos de servicio de tStore.</p>
+                </div>
+            </div>
+        </div>
+      `;
+    }
+
+    function checkPrice(input) {
+      const val = parseFloat(input.value);
+      const pmDiv = document.getElementById('paymentMethods');
+      const infoCard = document.getElementById('paymentInfoCard');
+
+      if (val > 0) {
+        pmDiv.style.display = 'block';
+        infoCard.style.display = 'block';
+      } else {
+        pmDiv.style.display = 'none';
+        infoCard.style.display = 'none';
+      }
+    }
+
+    function handleFileSelect(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const size = formatBytes(file.size);
+
+        document.getElementById('dropText').innerText = `Listo: ${file.name}`;
+        document.getElementById('upSize').value = size;
+
+        // Visual cue
+        document.getElementById('dropZone').style.borderColor = '#00e676';
+        document.getElementById('dropZone').style.background = 'rgba(0, 230, 118, 0.05)';
+      }
+    }
+
+    function formatBytes(bytes, decimals = 2) {
+      if (!+bytes) return '0 Bytes';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+    }
+
+    function handleRealUpload() {
+      const name = document.getElementById('upName').value;
+      const author = document.getElementById('upAuthor').value;
+      const fileInput = document.getElementById('fileInput');
+      const price = document.getElementById('upPrice').value;
+      const type = document.getElementById('upType').value;
+      const quality = document.getElementById('upQuality').value;
+      const size = document.getElementById('upSize').value;
+
+      if (!name || !author) {
+        alert('¡Faltan datos! Nombre y Autor son obligatorios.');
+        return;
+      }
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('¡Debes seleccionar un archivo real para subir!');
+        return;
+      }
+
+      // Simulate "Uploading" logic
+      const btn = document.querySelector('.install-button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<div class="spinner" style="width:20px; height:20px; border-width:2px; display:inline-block; vertical-align:middle; margin-right:10px;"></div> Subiendo al servidor...`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        // Create "Real" App Object
+        const newApp = {
+          name: name,
+          author: author,
+          publisher: 'Comunidad tStore',
+          version: '1.0',
+          category: type,
+          platform: type, // Using type (Console/PC) as platform
+          size: size,
+          price: price > 0 ? `$${price}` : 'Gratis',
+          quality: quality,
+          rate: '5.0',
+          isUserUpload: true,
+          repo: 'user-upload-' + Date.now(),
+          icon: 'assets/logo.png', // Default icon for uploads
+          splash: 'assets/banner-prev.png', // Default splash
+          useBlurSplash: true
+        };
+
+        // Save to LocalStorage (Persist locally)
+        const currentUploads = JSON.parse(localStorage.getItem('tstore_uploaded_games') || '[]');
+        currentUploads.push(newApp);
+        localStorage.setItem('tstore_uploaded_games', JSON.stringify(currentUploads));
+
+        // Update Runtime Memory
+        allApps.unshift(newApp); // Add to top of list
+
+        alert('¡Archivo subido exitosamente a la Tienda de Juegos!');
+
+        // Redirect to Store Tab
+        switchTab('store');
+
+      }, 2000); // 2 second fake upload delay
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => el.classList.remove('active'));
+
+      if (tab === 'search') {
+        searchInput.focus();
+        return;
+      }
+
+      if (tab === 'optimization') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+          if (el.textContent.includes('Optimizaciones') || el.textContent.includes('Optimizar')) el.classList.add('active');
+        });
+        renderOptimizations();
+        return;
+      }
+
+      if (tab === 'upload') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+          if (el.textContent.includes('Subir') || el.textContent.includes('Upload')) el.classList.add('active');
+        });
+        renderUpload();
+        return;
+      }
+
+      if (tab === 'updates') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+          if (el.textContent.includes('Actualizaciones') || el.textContent.includes('Update')) el.classList.add('active');
+        });
+        renderUpdates();
+        return;
+      }
+
+      // Default: Game Store
+      document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+        if (el.textContent.includes('Tienda') || el.textContent.includes('Apps')) el.classList.add('active');
+      });
+      renderGameStore();
     }
 
     function renderFeaturedCard(app) {
