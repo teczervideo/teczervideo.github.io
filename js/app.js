@@ -43,20 +43,24 @@ async function fetchAppDetails(repo) {
     try {
         const xmlUrl = `https://raw.githubusercontent.com/JesusQuijada34/${repo}/${XML_PATH}`;
         const res = await fetch(xmlUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+            console.warn(`[SKIP] ${repo}: HTTP ${res.status}`);
+            return null;
+        }
+
         const text = await res.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, "text/xml");
 
-        const node = doc.querySelector("detail_app") || doc.querySelector("flarm_app");
-        let app = {};
+        // Try different possible root nodes
+        const node = doc.querySelector("app") || doc.querySelector("detail_app") || doc.querySelector("flarm_app");
 
         if (!node) {
-            console.warn(`[INVALID] ${repo}: Nodo <app> no encontrado`);
+            console.warn(`[INVALID] ${repo}: No se encontró nodo raíz <app>`);
             return null;
         }
 
-        app = {
+        const app = {
             repo,
             publisher: node?.querySelector("publisher")?.textContent?.trim() || "",
             packagename: node?.querySelector("app")?.textContent?.trim() || "",
@@ -70,7 +74,7 @@ async function fetchAppDetails(repo) {
 
         // Validate essential fields
         if (!app.name || !app.publisher || !app.author || !app.packagename || !app.version || !app.correlationid || !app.rate || !app.platform) {
-            console.warn(`[INVALID] ${repo}: Faltan campos esenciales`);
+            console.warn(`[INVALID] ${repo}: Faltan campos esenciales`, app);
             return null;
         }
 
