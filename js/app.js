@@ -150,26 +150,11 @@ function renderHome() {
 }
 
 function renderGameStore() {
-    // Separate official catalog apps from user uploads
+    // Show ONLY official catalog apps (no user uploads)
     const catalogApps = allApps.filter(a => !a.isUserUpload);
-    const userUploads = allApps.filter(a => a.isUserUpload);
 
-    let html = '<h2 class="section-title">App JesusQuijada34</h2>';
-
-    // User Uploads Section (if any)
-    if (userUploads.length > 0) {
-        html += `
-            <div style="margin-bottom: 30px;">
-                <h3 class="sidebar-title" style="margin-bottom:15px; font-size:1.1rem; color:var(--accent-color);">Subidos por la Comunidad (${userUploads.length})</h3>
-                <div class="featured-grid">
-                    ${userUploads.map(renderFeaturedCard).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    // Official Catalog Section
-    html += `<h2 class="section-title">Catálogo Oficial de JesusQuijada34 (${catalogApps.length} apps)</h2>`;
+    let html = '<h2 class="section-title">App JesusQuijada34 - Catálogo Oficial</h2>';
+    html += `<p style="color: var(--text-secondary); margin-bottom: 2rem;">Aplicaciones y juegos desarrollados por JesusQuijada34 (${catalogApps.length} apps)</p>`;
 
     if (catalogApps.length === 0) {
         html += `
@@ -185,6 +170,47 @@ function renderGameStore() {
         html += `
             <div class="full-collection-grid">
                 ${catalogApps.map(renderFullCollectionCard).join('')}
+            </div>
+        `;
+    }
+
+    contentArea.innerHTML = html;
+}
+
+function renderStore() {
+    // Show ONLY user-uploaded projects
+    const userUploads = allApps.filter(a => a.isUserUpload);
+
+    let html = '<h2 class="section-title"><span class="material-icons-round" style="color:var(--accent-color); margin-right:10px;">storefront</span> TeczerStore - Comunidad</h2>';
+    html += `<p style="color: var(--text-secondary); margin-bottom: 2rem;">Proyectos subidos por la comunidad de TeczerStore</p>`;
+
+    if (userUploads.length === 0) {
+        html += `
+            <div class="empty-state">
+                <span class="material-icons-round">inventory_2</span>
+                <div>No hay proyectos subidos aún</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">
+                    Sé el primero en subir un proyecto en la sección "Subir Proyecto"
+                </div>
+                <button class="install-button" onclick="switchTab('upload')" style="margin-top: 20px; padding: 12px 24px;">
+                    <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">cloud_upload</span>
+                    Subir Proyecto
+                </button>
+            </div>
+        `;
+    } else {
+        html += `
+            <div style="margin-bottom: 30px; padding: 20px; background: rgba(30, 144, 255, 0.1); border-radius: 12px; border: 1px solid var(--accent-color);">
+                <h3 style="color: var(--accent-color); margin-bottom: 10px;">
+                    <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">info</span>
+                    Proyectos de la Comunidad
+                </h3>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin: 0;">
+                    Estos proyectos han sido subidos por usuarios de TeczerStore. Total: <strong>${userUploads.length}</strong> proyecto${userUploads.length !== 1 ? 's' : ''}
+                </p>
+            </div>
+            <div class="full-collection-grid">
+                ${userUploads.map(renderFullCollectionCard).join('')}
             </div>
         `;
     }
@@ -399,10 +425,10 @@ function handleRealUpload() {
         allApps.unshift(newApp); // Add to top of list
         // Note: allApps needs to be accessible. Since this is now global in app.js, it is.
 
-        alert('¡Archivo subido exitosamente a la Tienda de Juegos!');
+        alert('¡Archivo subido exitosamente a TeczerStore!')
 
-        // Redirect to Store Tab
-        switchTab('jesustore');
+        // Redirect to Store Tab (Community Projects)
+        switchTab('store');
 
     }, 2000);
 }
@@ -658,6 +684,14 @@ function switchTab(tab) {
             if (el.textContent.includes('JesusQuijada34')) el.classList.add('active');
         });
         renderGameStore();
+        return;
+    }
+
+    if (tab === 'store') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+            if (el.textContent.includes('Store') && !el.textContent.includes('Teczer')) el.classList.add('active');
+        });
+        renderStore();
         return;
     }
 
