@@ -45,22 +45,25 @@ function renderProgramming() {
                     </button>
                 </div>
 
-                <div class="sidebar-card" style="border-color: #ff9800;">
-                    <div class="sidebar-title" style="color: #ff9800;">
-                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">settings</span>
-                        Configuración
-                    </div>
-                    <div class="sidebar-desc" style="color: #fff; font-size: 0.85rem; margin-bottom: 15px;">
-                        Para usar la IA real, necesitas configurar tu API Key de Gemini
-                    </div>
-                    <button class="opt-btn" onclick="showAPISetupGuide()" style="width: 100%; background: #ff9800;">
-                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">book</span>
-                        Ver Guía de Configuración
-                    </button>
-                </div>
-
                 <div class="sidebar-card" style="border-color: #00e676;">
                     <div class="sidebar-title" style="color: #00e676;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">auto_awesome</span>
+                        IA Automática
+                    </div>
+                    <div class="sidebar-desc" style="color: #fff; font-size: 0.85rem; margin-bottom: 15px;">
+                        Generador de código inteligente. ¡No necesitas configurar nada!
+                    </div>
+                    <button class="opt-btn" onclick="activateLocalAI()" style="width: 100%; background: #00e676; color: #000;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">bolt</span>
+                        Activar IA (Automático)
+                    </button>
+                    <div id="aiStatus" style="margin-top: 10px; padding: 10px; background: rgba(0, 230, 118, 0.1); border-radius: 5px; display: none;">
+                        <small style="color: #00e676;">✅ IA Activada y Lista</small>
+                    </div>
+                </div>
+
+                <div class="sidebar-card" style="border-color: #1e90ff;">
+                    <div class="sidebar-title" style="color: #1e90ff;">
                         <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">tips_and_updates</span>
                         Consejos
                     </div>
