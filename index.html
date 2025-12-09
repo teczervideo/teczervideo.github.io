@@ -1227,6 +1227,17 @@
     }
 
     function renderUpload() {
+      // Get recent uploads from local storage or use defaults
+      const storedUploads = JSON.parse(localStorage.getItem('tstore_user_uploads') || '[]');
+
+      // Default mocks if empty
+      const defaultUploads = [
+        { name: 'Zelda BOTW 60FPS Mod', author: 'GamerX', time: 'Hace 5 min' },
+        { name: 'Yuzu Early Access 4000', author: 'EmulationKing', time: 'Hace 12 min' }
+      ];
+
+      const uploadsToRender = storedUploads.length > 0 ? [...storedUploads.reverse(), ...defaultUploads] : defaultUploads;
+
       contentArea.innerHTML = `
         <div class="upload-layout">
             <!-- Sidebar -->
@@ -1240,6 +1251,21 @@
                 </div>
 
                 <div class="sidebar-card">
+                    <div class="sidebar-title">Archivos Recientes</div>
+                    <div class="news-feed" id="recentUploadsList">
+                        ${uploadsToRender.map(up => `
+                           <div class="news-item" style="display:flex; justify-content:space-between; align-items:center;">
+                               <div>
+                                   <div class="news-title">${up.name}</div>
+                                   <div class="sidebar-desc">Por: ${up.author || 'Usuario'} • ${up.time || 'Ahora'}</div>
+                               </div>
+                               <span class="material-icons-round" style="color:var(--accent-color);">download</span>
+                           </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
                     <div class="sidebar-title">Novedades</div>
                     <div class="news-feed">
                         <div class="news-item">
@@ -1249,10 +1275,6 @@
                         <div class="news-item">
                             <div class="news-title">Optimización FPS v2.0</div>
                             <div class="sidebar-desc">Ayer</div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-title">Servidor Discord</div>
-                            <div class="sidebar-desc">Nuevo</div>
                         </div>
                     </div>
                 </div>
@@ -1271,12 +1293,17 @@
 
                     <div class="form-group">
                         <label class="form-label">Nombre del Proyecto</label>
-                        <input type="text" class="form-input" placeholder="Ej: Super Mario Optimization Mod">
+                        <input type="text" id="upName" class="form-input" placeholder="Ej: Super Mario Optimization Mod">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Autor</label>
+                        <input type="text" id="upAuthor" class="form-input" placeholder="Tu nombre de usuario">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Tipo</label>
-                        <select class="form-input">
+                        <select id="upType" class="form-input">
                             <option>Emulador</option>
                             <option>ROM / ISO</option>
                             <option>Mod / Texture Pack</option>
@@ -1285,37 +1312,67 @@
                         </select>
                     </div>
 
-                    <div class="drop-zone">
+                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
                         <span class="material-icons-round drop-icon">folder_open</span>
-                        <div style="font-weight:600; margin-bottom:4px;">Arrastra archivos aquí o haz clic para buscar</div>
+                        <div style="font-weight:600; margin-bottom:4px;" id="dropText">Arrastra archivos aquí o haz clic para buscar</div>
                         <div class="sidebar-desc">Soporta .zip, .rar, .7z, .apk, .exe</div>
+                        <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(this)">
                     </div>
 
-                    <button class="install-button" style="width:100%; padding:14px; font-size:1rem;" onclick="alert('Funcionalidad de subida simulada. ¡Gracias por contribuir!')">
+                    <button class="install-button" style="width:100%; padding:14px; font-size:1rem;" onclick="handleUpload()">
                         Publicar en la Tienda
                     </button>
-                </div>
-
-                <h3 class="section-title">Archivos Recientes de Usuarios</h3>
-                <div class="recent-files-list">
-                   <div class="news-item" style="display:flex; justify-content:space-between; align-items:center;">
-                       <div>
-                           <div class="news-title">Zelda BOTW 60FPS Mod</div>
-                           <div class="sidebar-desc">Por: GamerX • Hace 5 min</div>
-                       </div>
-                       <span class="material-icons-round" style="color:var(--accent-color);">download</span>
-                   </div>
-                   <div class="news-item" style="display:flex; justify-content:space-between; align-items:center;">
-                       <div>
-                           <div class="news-title">Yuzu Early Access 4000</div>
-                           <div class="sidebar-desc">Por: EmulationKing • Hace 12 min</div>
-                       </div>
-                       <span class="material-icons-round" style="color:var(--accent-color);">download</span>
-                   </div>
                 </div>
             </div>
         </div>
       `;
+    }
+
+    function handleFileSelect(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('dropText').innerText = `Archivo seleccionado: ${input.files[0].name}`;
+        document.getElementById('dropZone').style.borderColor = 'var(--accent-color)';
+        document.getElementById('dropZone').style.backgroundColor = 'rgba(30, 144, 255, 0.1)';
+      }
+    }
+
+    function handleUpload() {
+      const name = document.getElementById('upName').value;
+      const author = document.getElementById('upAuthor').value;
+      const fileInput = document.getElementById('fileInput');
+
+      if (!name || !author) {
+        alert('Por favor completa el nombre del proyecto y el autor.');
+        return;
+      }
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona un archivo para subir.');
+        return;
+      }
+
+      // Simulate Upload
+      const originalText = document.querySelector('.upload-main-card button').innerText;
+      document.querySelector('.upload-main-card button').innerText = 'Subiendo...';
+      document.querySelector('.upload-main-card button').disabled = true;
+
+      setTimeout(() => {
+        const newUpload = {
+          name: name,
+          author: author,
+          type: document.getElementById('upType').value,
+          time: 'Hace un momento'
+        };
+
+        const storedUploads = JSON.parse(localStorage.getItem('tstore_user_uploads') || '[]');
+        storedUploads.push(newUpload);
+        localStorage.setItem('tstore_user_uploads', JSON.stringify(storedUploads));
+
+        alert(`¡Proyecto "${name}" subido exitosamente a la comunidad tStore!`);
+
+        // Refresh view
+        renderUpload();
+      }, 1500);
     }
 
     function renderOptimizations() {
