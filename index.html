@@ -13,7 +13,11 @@
   <meta property="og:url" content="https://jesusquijada34.github.io/">
   <meta name="twitter:card" content="summary_large_image">
   <title>TeczerStore | Gamer Center</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+  <meta name="theme-color" content="#1e90ff">
+  <meta name="color-scheme" content="dark">
+  <!-- Opera GX Compatibility -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -55,6 +59,15 @@
       min-height: 100vh;
       font-size: 15px;
       overflow-x: hidden;
+      /* Opera GX Optimizations */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+      /* Hardware Acceleration for Opera GX */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: scroll-position;
     }
 
     /* Background Animations */
@@ -73,20 +86,41 @@
     .bg-shape {
       position: absolute;
       border-radius: 50%;
+      -webkit-filter: blur(100px);
       filter: blur(100px);
       opacity: 0.15;
+      -webkit-animation: float 20s infinite ease-in-out;
       animation: float 20s infinite ease-in-out;
       background: var(--accent-color);
+      /* Opera GX GPU Acceleration */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+    @-webkit-keyframes float {
+
+      0%,
+      100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+      }
+
+      50% {
+        -webkit-transform: translate(-50px, 50px);
+        transform: translate(-50px, 50px);
+      }
     }
 
     @keyframes float {
 
       0%,
       100% {
+        -webkit-transform: translate(0, 0);
         transform: translate(0, 0);
       }
 
       50% {
+        -webkit-transform: translate(-50px, 50px);
         transform: translate(-50px, 50px);
       }
     }
@@ -942,8 +976,29 @@
     <div id="modalContent"></div>
   </div>
 
-  <script src="js/app.js?v=5.0"></script>
-  <script src="js/app.js?v=5.0"></script>
+  <script src="js/app.js?v=5.1"></script>
+  <script>
+    // Opera GX Detection and Optimization
+    (function () {
+      const isOperaGX = (navigator.userAgent.indexOf('OPR') !== -1 || navigator.userAgent.indexOf('Opera') !== -1);
+
+      if (isOperaGX) {
+        console.log('%c🎮 TeczerStore optimizado para Opera GX', 'color: #ff1464; font-size: 16px; font-weight: bold;');
+
+        // Enable hardware acceleration for Opera GX
+        document.body.style.transform = 'translateZ(0)';
+        document.body.style.webkitTransform = 'translateZ(0)';
+
+        // Optimize scrolling for Opera GX
+        if ('scrollBehavior' in document.documentElement.style) {
+          document.documentElement.style.scrollBehavior = 'smooth';
+        }
+
+        // Add Opera GX class to body for specific styling
+        document.body.classList.add('opera-gx');
+      }
+    })();
+  </script>
 </body>
 
 </html>
