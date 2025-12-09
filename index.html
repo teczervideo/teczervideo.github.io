@@ -40,26 +40,74 @@
     <div class="nav-item" data-tab="shortcuts">Accesos Directos</div>
   </nav>
 
-  <!-- Section: Information -->
-  <section id="info" class="section active">
-    <div class="card">
-      <h1>Bienvenido a TeczerVideo</h1>
-      <p>El centro definitivo para modificación de juegos, noticias y desarrollo.</p>
-
-    </div>
-
-    <div class="card">
-      <h2>Novedades</h2>
-      <p>Actualizaciones recientes sobre mods y parches de rendimiento.</p>
-      <!-- Mock Content -->
-      <div style="display:flex; gap:1rem; margin-top:1rem;">
-        <div style="background:var(--bg-secondary); padding:1rem; border-radius:8px; flex:1;">
-          <strong>Nuevo Mod de Texturas</strong><br>
-          <small>Hace 2 horas</small>
+  <!-- Section: Information (Inicio) -->
+  <section id="info" class="section active" style="max-width:1400px; padding: 2rem;">
+    <div class="info-layout">
+      <!-- Left Sidebar (Bienvenido & Novedades) -->
+      <aside class="info-sidebar">
+        <div class="card sidebar-card">
+          <h1>Bienvenido a TeczerVideo</h1>
+          <p>Centro definitivo de modding.</p>
         </div>
-        <div style="background:var(--bg-secondary); padding:1rem; border-radius:8px; flex:1;">
-          <strong>Optimización FPS v2.0</strong><br>
-          <small>Ayer</small>
+
+        <div class="card sidebar-card">
+          <h2>Novedades</h2>
+          <div class="news-feed">
+            <div class="news-item">
+              <strong>Nuevo Mod de Texturas</strong>
+              <small>Hace 2 horas</small>
+            </div>
+            <div class="news-item">
+              <strong>Optimización FPS v2.0</strong>
+              <small>Ayer</small>
+            </div>
+            <div class="news-item">
+              <strong>Servidor Discord</strong>
+              <small>Nuevo</small>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Content (Community Projects Micro-pages) -->
+      <div class="info-content">
+        <h2 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+          Proyectos de la Comunidad
+        </h2>
+
+        <div class="projects-showcase-grid">
+          <!-- Project 1 -->
+          <div class="project-mini-card">
+            <div class="project-header">
+              <span class="material-icons-round">android</span>
+              <span>Super Emulator</span>
+            </div>
+            <p>Emulador ligero para Android.</p>
+            <button class="mini-btn">Ver</button>
+          </div>
+          <!-- Project 2 -->
+          <div class="project-mini-card">
+            <div class="project-header">
+              <span class="material-icons-round">sports_esports</span>
+              <span>Retro Engine</span>
+            </div>
+            <p>Motor de juegos 2D open source.</p>
+            <button class="mini-btn">Ver</button>
+          </div>
+          <!-- Project 3 -->
+          <div class="project-mini-card">
+            <div class="project-header">
+              <span class="material-icons-round">memory</span>
+              <span>RAM Booster</span>
+            </div>
+            <p>Optimización de memoria.</p>
+            <button class="mini-btn">Ver</button>
+          </div>
+          <!-- Project 4 (Placeholder) -->
+          <div class="project-mini-card placeholder">
+            <span class="material-icons-round" style="font-size:40px; color:var(--text-secondary)">add_circle</span>
+            <p>Tu proyecto aquí</p>
+          </div>
         </div>
       </div>
     </div>
@@ -200,7 +248,7 @@
     </div>
   </section>
 
-  <script src="js/app.js?v=2.0"></script>
+  <script src="js/app.js?v=2.1"></script>
 </body>
 
 </html>
