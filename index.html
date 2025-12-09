@@ -53,6 +53,10 @@
           <span class="material-icons-round">system_update</span>
           <span>Actualizaciones</span>
         </div>
+        <div class="tab-item" onclick="switchTab('optimization')">
+          <span class="material-icons-round">speed</span>
+          <span>Optimizaciones</span>
+        </div>
       </div>
 
       <div id="contentArea" class="content-wrapper">
@@ -69,7 +73,11 @@
       </div>
       <div class="bottom-nav-item" onclick="switchTab('updates')">
         <span class="material-icons-round">system_update</span>
-        <span>Actualizaciones</span>
+        <span>Update</span>
+      </div>
+      <div class="bottom-nav-item" onclick="switchTab('optimization')">
+        <span class="material-icons-round">speed</span>
+        <span>Optimizar</span>
       </div>
       <div class="bottom-nav-item" onclick="switchTab('search')">
         <span class="material-icons-round">search</span>
@@ -378,6 +386,47 @@
       `;
     }
 
+    function renderOptimizations() {
+      contentArea.innerHTML = `
+        <h2 class="section-title"><span class="material-icons-round" style="color:var(--accent-color); margin-right:10px;">speed</span> Guía de Optimización</h2>
+        <p style="color:var(--text-secondary); margin-bottom:2rem;">Selecciona tu hardware para aplicar las mejores configuraciones de rendimiento y bajos recursos.</p>
+
+        <div class="opt-grid">
+           <!-- Intel -->
+           <div class="opt-card brand-intel">
+             <span class="material-icons-round opt-icon">memory</span>
+             <div class="opt-title">Intel® HD Graphics</div>
+             <div class="opt-desc">Drivers modificados y configs para UHD 620/630. Aumenta FPS en laptops.</div>
+             <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Intel-Optimization-Guide', '_blank')">Ver Guía</button>
+           </div>
+           
+           <!-- AMD -->
+           <div class="opt-card brand-amd">
+             <span class="material-icons-round opt-icon">grid_view</span>
+             <div class="opt-title">AMD Radeon™ Tweaks</div>
+             <div class="opt-desc">Desbloquea rendimiento en APUs Ryzen y GPUs Radeon Legacy.</div>
+             <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/AMD-Tweaks', '_blank')">Ver Guía</button>
+           </div>
+           
+           <!-- Nvidia -->
+           <div class="opt-card brand-nvidia">
+             <span class="material-icons-round opt-icon">remove_red_eye</span>
+             <div class="opt-title">Nvidia Control Panel</div>
+             <div class="opt-desc">Configuración "High Performance" y debloat de drivers.</div>
+             <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Nvidia-Low-End', '_blank')">Ver Guía</button>
+           </div>
+           
+           <!-- Generic / Windows -->
+           <div class="opt-card brand-generic">
+             <span class="material-icons-round opt-icon">window</span>
+             <div class="opt-title">Windows Debloat</div>
+             <div class="opt-desc">Scripts universales para eliminar telemetría y procesos basura.</div>
+             <button class="opt-btn" onclick="window.open('https://github.com/JesusQuijada34/Windows-Optimization', '_blank')">Ver Guía</button>
+           </div>
+        </div>
+      `;
+    }
+
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => el.classList.remove('active'));
@@ -387,9 +436,17 @@
         return;
       }
 
+      if (tab === 'optimization') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+          if (el.textContent.includes('Optimizaciones') || el.textContent.includes('Optimizar')) el.classList.add('active');
+        });
+        renderOptimizations();
+        return;
+      }
+
       if (tab === 'updates') {
         document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
-          if (el.textContent.includes('Actualizaciones')) el.classList.add('active');
+          if (el.textContent.includes('Actualizaciones') || el.textContent.includes('Update')) el.classList.add('active');
         });
         renderUpdates();
         return;
