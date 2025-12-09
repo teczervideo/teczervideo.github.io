@@ -115,9 +115,25 @@ body {
     background: var(--bg-secondary);
     border-right: 1px solid var(--border-color);
     border-bottom: none;
-    backdrop-filter: none;
-    /* Solid sidebar often looks better for IDE style */
     padding: 1rem;
+    overflow-y: auto;
+    /* Allow scrolling */
+    scrollbar-width: thin;
+    scrollbar-color: #333 transparent;
+}
+
+/* Sidebar Scrollbar (WebKit/Opera) */
+.nav-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav-container::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+.nav-container::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .nav-header {
