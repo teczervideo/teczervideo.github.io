@@ -125,6 +125,16 @@
       }
     }
 
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     /* App Layout */
     .app-container {
       display: flex;
@@ -923,6 +933,10 @@
           <span class="material-icons-round">storefront</span>
           <span>Store</span>
         </div>
+        <div class="tab-item" onclick="switchTab('programming')">
+          <span class="material-icons-round">code</span>
+          <span>Programación</span>
+        </div>
         <div class="tab-item" onclick="switchTab('updates')">
           <span class="material-icons-round">system_update</span>
           <span>Actualizaciones</span>
@@ -957,6 +971,10 @@
         <span class="material-icons-round">storefront</span>
         <span>Store</span>
       </div>
+      <div class="bottom-nav-item" onclick="switchTab('programming')">
+        <span class="material-icons-round">code</span>
+        <span>Code</span>
+      </div>
       <div class="bottom-nav-item" onclick="switchTab('updates')">
         <span class="material-icons-round">system_update</span>
         <span>Update</span>
@@ -985,6 +1003,7 @@
   </div>
 
   <script src="js/app.js?v=6.0"></script>
+  <script src="js/programming.js"></script>
   <script>
     // Opera GX Detection and Optimization
     (function () {

@@ -703,6 +703,14 @@ function switchTab(tab) {
         return;
     }
 
+    if (tab === 'programming') {
+        document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
+            if (el.textContent.includes('Programación') || el.textContent.includes('Code')) el.classList.add('active');
+        });
+        renderProgramming();
+        return;
+    }
+
     if (tab === 'upload') {
         document.querySelectorAll('.bottom-nav-item, .tab-item').forEach(el => {
             if (el.textContent.includes('Subir') || el.textContent.includes('Upload')) el.classList.add('active');
