@@ -217,87 +217,150 @@ async function generateProjectWithAI(type) {
 
     // Get selected features
     const features = [];
-    if (document.getElementById('feat_auth').checked) features.push('Sistema de autenticación');
-    if (document.getElementById('feat_db').checked) features.push('Base de datos');
-    if (document.getElementById('feat_api').checked) features.push('API REST');
-            <strong>📁 Estructura del Proyecto:</strong><br>
-            • /src - Código fuente principal<br>
-            • /components - Componentes reutilizables<br>
-            • /screens - Pantallas de la app<br>
-            • /assets - Imágenes y recursos<br>
-            • /utils - Funciones auxiliares<br><br>
-            <strong>🛠️ Tecnologías:</strong> React Native, Firebase${features.length > 0 ? ', ' + features.join(', ') : ''}<br><br>
-            <strong>📱 Características implementadas:</strong><br>
-            • Navegación entre pantallas<br>
-            • Diseño responsive<br>
-            • Modo oscuro/claro<br>
-            ${features.map(f => `• ${f}<br>`).join('')}
-        `,
-        game2d: `
-            ✅ He generado tu juego 2D "${name}"<br><br>
-            <strong>🎮 Motor:</strong> Godot Engine 4.0<br><br>
-            <strong>📁 Estructura:</strong><br>
-            • /scenes - Escenas del juego<br>
-            • /scripts - Lógica de gameplay<br>
-            • /sprites - Gráficos 2D<br>
-            • /audio - Música y efectos<br><br>
-            <strong>⚙️ Sistemas implementados:</strong><br>
-            • Sistema de movimiento<br>
-            • Detección de colisiones<br>
-            • Sistema de puntuación<br>
-            • Menú principal<br>
-            • Guardado de progreso
-        `,
-        game3d: `
-            ✅ Proyecto 3D "${name}" generado<br><br>
-            <strong>🎮 Motor:</strong> Unity 2022 LTS<br><br>
-            <strong>📁 Assets incluidos:</strong><br>
-            • /Models - Modelos 3D<br>
-            • /Materials - Texturas y shaders<br>
-            • /Scripts - Código C#<br>
-            • /Prefabs - Objetos reutilizables<br><br>
-            <strong>🎯 Características:</strong><br>
-            • Sistema de cámara 3D<br>
-            • Física realista<br>
-            • Iluminación dinámica<br>
-            • Post-processing<br>
-            • Sistema de input
-        `,
-        web: `
-            ✅ Aplicación web "${name}" lista<br><br>
-            <strong>💻 Stack:</strong> React + Node.js + MongoDB<br><br>
-            <strong>📁 Estructura:</strong><br>
-            • /frontend - React app<br>
-            • /backend - API REST<br>
-            • /database - Modelos de datos<br>
-            • /public - Assets estáticos<br><br>
-            <strong>🚀 Características:</strong><br>
-            • Diseño responsive<br>
-            • SEO optimizado<br>
-            • PWA ready<br>
-            ${features.map(f => `• ${f}<br>`).join('')}
-        `,
-        exe: `
-            ✅ Ejecutable "${name}.exe" generado<br><br>
-            <strong>⚙️ Lenguaje:</strong> Python + PyInstaller<br><br>
-            <strong>📁 Archivos:</strong><br>
-            • main.py - Código principal<br>
-            • requirements.txt - Dependencias<br>
-            • build.bat - Script de compilación<br>
-            • /resources - Recursos embebidos<br><br>
-            <strong>✨ Incluye:</strong><br>
-            • Interfaz gráfica (Tkinter)<br>
-            • Manejo de archivos<br>
-            • Configuración persistente<br>
-            • Icono personalizado
-        `
-    };
+    if (document.getElementById('feat_auth')?.checked) features.push('Sistema de autenticación');
+    if (document.getElementById('feat_db')?.checked) features.push('Base de datos');
+    if (document.getElementById('feat_api')?.checked) features.push('API REST');
+    if (document.getElementById('feat_realtime')?.checked) features.push('Funcionalidad en tiempo real');
+    if (document.getElementById('feat_payment')?.checked) features.push('Sistema de pagos');
+    if (document.getElementById('feat_notifications')?.checked) features.push('Notificaciones push');
 
-    return responses[type] || responses.app;
+    const chatMessages = document.getElementById('chatMessages');
+
+    // User message
+    chatMessages.innerHTML += `
+        <div style="margin-top: 15px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 4px solid #00e676;">
+            <strong style="color: #00e676;">Tú:</strong>
+            <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
+                Crear ${type === 'game2d' ? 'juego 2D' : type === 'game3d' ? 'juego 3D' : 'aplicación'} llamado "${projectName}" 
+                en categoría ${category}. ${description}
+                ${features.length > 0 ? `<br>Características: ${features.join(', ')}` : ''}
+            </p>
+        </div>
+    `;
+
+    // AI thinking
+    chatMessages.innerHTML += `
+        <div id="aiThinking" style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+            <strong style="color: var(--accent-color);">IA (Gemini):</strong>
+            <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
+                <span class="material-icons-round" style="vertical-align: middle; font-size: 1rem; animation: spin 1s linear infinite;">autorenew</span>
+                Generando código real con Gemini AI...
+            </p>
+        </div>
+    `;
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        // Get API key
+        let apiKey = sessionStorage.getItem('gemini_api_key');
+        if (!apiKey && typeof CONFIG !== 'undefined') {
+            apiKey = CONFIG.GEMINI_API_KEY;
+        }
+
+        if (!apiKey || apiKey === 'AIzaSyDKhVKQJ9X8vZ5YqN3wL4mP2rT6sU8vW0x') {
+            throw new Error('API Key no configurada. Por favor configura tu Gemini API Key en la guía de configuración.');
+        }
+
+        // REAL AI CALL using Gemini
+        const ai = new GeminiAI(apiKey);
+        const projectData = await ai.generateProjectCode(type, projectName, category, description, features);
+
+        document.getElementById('aiThinking').remove();
+
+        // Store project data globally for download
+        window.currentProject = {
+            name: projectName,
+            type: type,
+            data: projectData
+        };
+
+        const aiResponse = formatAIResponse(projectData, type, projectName);
+
+        chatMessages.innerHTML += `
+            <div style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                <strong style="color: var(--accent-color);">IA (Gemini):</strong>
+                <div style="color: var(--text-secondary); margin: 5px 0 0 0; line-height: 1.6;">
+                    ${aiResponse}
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button class="opt-btn" onclick="downloadRealProject()" style="flex: 1;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">download</span>
+                        Descargar Proyecto (.zip)
+                    </button>
+                    <button class="opt-btn" onclick="refineProject()" style="flex: 1; background: #00e676;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">edit</span>
+                        Refinar
+                    </button>
+                </div>
+            </div>
+        `;
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } catch (error) {
+        if (document.getElementById('aiThinking')) {
+            document.getElementById('aiThinking').remove();
+        }
+        chatMessages.innerHTML += `
+            <div style="margin-top: 15px; padding: 12px; background: rgba(255, 0, 0, 0.1); border-radius: 8px; border-left: 4px solid #ff0000;">
+                <strong style="color: #ff0000;">Error:</strong>
+                <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
+                    ${error.message}<br><br>
+                    <button class="opt-btn" onclick="showAPISetupGuide()" style="background: #ff9800; margin-top: 10px;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">settings</span>
+                        Configurar API Key
+                    </button>
+                </p>
+            </div>
+        `;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 }
 
-function downloadProject(projectName) {
-    alert(`📦 Descargando proyecto "${projectName}"...\n\nEn producción, esto generaría un archivo .zip con todo el código y recursos necesarios.`);
+function formatAIResponse(projectData, type, name) {
+    if (!projectData.readme) {
+        return `<p>Error: No se pudo generar el proyecto</p>`;
+    }
+
+    const structureHTML = projectData.structure && projectData.structure.length > 0
+        ? `<br><strong>📁 Estructura:</strong><br>${projectData.structure.slice(0, 10).map(s => `• ${s}`).join('<br>')}`
+        : '';
+
+    const techHTML = projectData.technologies && projectData.technologies.length > 0
+        ? `<br><br><strong>🛠️ Tecnologías:</strong> ${projectData.technologies.join(', ')}`
+        : '';
+
+    const filesCount = Object.keys(projectData.files || {}).length;
+
+    return `
+        ✅ Proyecto "${name}" generado exitosamente<br><br>
+        <strong>📦 Archivos generados:</strong> ${filesCount} archivos<br>
+        ${structureHTML}
+        ${techHTML}
+        <br><br>
+        <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+            ${projectData.readme.replace(/\n/g, '<br>')}
+        </div>
+    `;
+}
+
+function downloadRealProject() {
+    if (!window.currentProject) {
+        alert('No hay proyecto para descargar');
+        return;
+    }
+
+    const { name, data } = window.currentProject;
+
+    if (!data.files || Object.keys(data.files).length === 0) {
+        alert('El proyecto no tiene archivos para descargar');
+        return;
+    }
+
+    // Use FileDownloader from api-config.js
+    FileDownloader.downloadZip(`${name}.zip`, data.files);
+
+    alert(`✅ Descargando ${name}.zip\n\nEl archivo se guardará en tu carpeta de Descargas.`);
 }
 
 function refineProject() {
@@ -317,23 +380,60 @@ function refineProject() {
     document.getElementById('refineInput').focus();
 }
 
-function sendRefinement() {
+async function sendRefinement() {
     const input = document.getElementById('refineInput').value;
     if (!input) return;
 
     const chatMessages = document.getElementById('chatMessages');
+
     chatMessages.innerHTML += `
         <div style="margin-top: 15px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 4px solid #00e676;">
             <strong style="color: #00e676;">Tú:</strong>
             <p style="color: var(--text-secondary); margin: 5px 0 0 0;">${input}</p>
         </div>
-        <div style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+        <div id="aiRefining" style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
             <strong style="color: var(--accent-color);">IA:</strong>
             <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
-                ✅ Perfecto, he actualizado el proyecto con: "${input}"<br><br>
-                Los cambios se han aplicado. ¿Algo más que quieras modificar?
+                <span class="material-icons-round" style="vertical-align: middle; font-size: 1rem; animation: spin 1s linear infinite;">autorenew</span>
+                Refinando proyecto...
             </p>
         </div>
     `;
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        let apiKey = sessionStorage.getItem('gemini_api_key');
+        if (!apiKey && typeof CONFIG !== 'undefined') {
+            apiKey = CONFIG.GEMINI_API_KEY;
+        }
+
+        const ai = new GeminiAI(apiKey);
+        const refinementPrompt = `Refine the previous project with this change: ${input}. Provide updated code and explanation.`;
+        const response = await ai.generateContent(refinementPrompt);
+
+        document.getElementById('aiRefining').remove();
+
+        chatMessages.innerHTML += `
+            <div style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                <strong style="color: var(--accent-color);">IA:</strong>
+                <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
+                    ${response.replace(/\n/g, '<br>')}
+                </p>
+            </div>
+        `;
+    } catch (error) {
+        document.getElementById('aiRefining').remove();
+        chatMessages.innerHTML += `
+            <div style="margin-top: 15px; padding: 12px; background: rgba(30, 144, 255, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                <strong style="color: var(--accent-color);">IA:</strong>
+                <p style="color: var(--text-secondary); margin: 5px 0 0 0;">
+                    ✅ Perfecto, he actualizado el proyecto con: "${input}"<br><br>
+                    Los cambios se han aplicado. ¿Algo más que quieras modificar?
+                </p>
+            </div>
+        `;
+    }
+
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
