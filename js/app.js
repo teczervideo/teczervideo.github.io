@@ -28,6 +28,10 @@ window.onload = async () => {
         console.error("Error loading catalog:", e);
     }
 
+    console.log(`[tStore] Loaded ${allApps.length} total apps`);
+    console.log(`[tStore] Catalog apps: ${allApps.filter(a => !a.isUserUpload).length}`);
+    console.log(`[tStore] User uploads: ${allApps.filter(a => a.isUserUpload).length}`);
+
     renderHome(); // Default view
 };
 
@@ -142,17 +146,46 @@ function renderHome() {
 }
 
 function renderGameStore() {
-    contentArea.innerHTML = `
-    <h2 class="section-title">App JesusQuijada34</h2>
-    
-    <!-- User Uploads Highlight -->
-    ${renderUserUploadsSection()}
+    // Separate official catalog apps from user uploads
+    const catalogApps = allApps.filter(a => !a.isUserUpload);
+    const userUploads = allApps.filter(a => a.isUserUpload);
 
-    <h2 class="section-title">Catálogo Oficial</h2>
-    <div class="full-collection-grid">
-      ${allApps.map(renderFullCollectionCard).join('')}
-    </div>
-  `;
+    let html = '<h2 class="section-title">App JesusQuijada34</h2>';
+
+    // User Uploads Section (if any)
+    if (userUploads.length > 0) {
+        html += `
+            <div style="margin-bottom: 30px;">
+                <h3 class="sidebar-title" style="margin-bottom:15px; font-size:1.1rem; color:var(--accent-color);">Subidos por la Comunidad (${userUploads.length})</h3>
+                <div class="featured-grid">
+                    ${userUploads.map(renderFeaturedCard).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // Official Catalog Section
+    html += `<h2 class="section-title">Catálogo Oficial de JesusQuijada34 (${catalogApps.length} apps)</h2>`;
+
+    if (catalogApps.length === 0) {
+        html += `
+            <div class="empty-state">
+                <span class="material-icons-round">apps</span>
+                <div>Cargando catálogo...</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">
+                    Si esto tarda mucho, verifica tu conexión a internet.
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="full-collection-grid">
+                ${catalogApps.map(renderFullCollectionCard).join('')}
+            </div>
+        `;
+    }
+
+    contentArea.innerHTML = html;
 }
 
 function renderUserUploadsSection() {
