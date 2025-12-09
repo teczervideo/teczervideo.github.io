@@ -13,6 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadBtn = document.getElementById('upload-widget');
     const notifArea = document.getElementById('notification-feed');
 
+    // --- Upload Logic ---
+    window.uploadProject = () => {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput && fileInput.files.length > 0) {
+            const fileName = fileInput.files[0].name;
+            const projectName = document.querySelector('.upload-form input[type="text"]').value || "Sin nombre";
+
+            // Simulation
+            alert(`Subiendo "${fileName}" como parte del proyecto "${projectName}"...\n\n(Esta es una simulación. En un servidor real, el archivo se enviaría ahora.)`);
+
+            // Clear
+            fileInput.value = '';
+        } else {
+            const projectName = document.querySelector('.upload-form input[type="text"]').value;
+            if (projectName) {
+                alert(`Creando entrada de proyecto "${projectName}"... (Simulación: Faltan archivos adjuntos para publicar la v1.0)`);
+            } else {
+                alert("Por favor selecciona un archivo o completa el nombre del proyecto.");
+            }
+        }
+    };
+
     // Navigation Logic
     function switchTab(tabId) {
         // Validation

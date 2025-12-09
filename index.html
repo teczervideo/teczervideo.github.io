@@ -69,44 +69,75 @@
         </div>
       </aside>
 
-      <!-- Right Content (Community Projects Micro-pages) -->
+      <!-- Right Content (Upload Center & Library) -->
       <div class="info-content">
-        <h2 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-          Proyectos de la Comunidad
+        <!-- New Upload Section -->
+        <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
+          Centro de Carga (Comunidad)
         </h2>
 
-        <div class="projects-showcase-grid">
-          <!-- Project 1 -->
-          <div class="project-mini-card">
-            <div class="project-header">
-              <span class="material-icons-round">android</span>
-              <span>Super Emulator</span>
-            </div>
-            <p>Emulador ligero para Android.</p>
-            <button class="mini-btn">Ver</button>
+        <div class="upload-center-card">
+          <div class="upload-header">
+            <span class="material-icons-round">cloud_upload</span>
+            <h3>Subir Nuevo Proyecto / Archivo</h3>
           </div>
-          <!-- Project 2 -->
-          <div class="project-mini-card">
-            <div class="project-header">
-              <span class="material-icons-round">sports_esports</span>
-              <span>Retro Engine</span>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Comparte tus emuladores, roms, o aplicaciones compiladas con la comunidad.
+          </p>
+
+          <div class="upload-form">
+            <input type="text" class="chat-input" placeholder="Nombre del Proyecto"
+              style="margin-bottom: 10px; width: 100%;">
+            <select class="chat-input" style="margin-bottom: 10px; width: 100%;">
+              <option>Tipo: Emulador</option>
+              <option>Tipo: Juego / ROM</option>
+              <option>Tipo: Herramienta (App)</option>
+            </select>
+
+            <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+              <span class="material-icons-round" style="font-size: 32px; color: var(--accent-color);">folder_open</span>
+              <span>Arrastra archivos aquí o haz clic para buscar</span>
+              <input type="file" id="fileInput" hidden>
             </div>
-            <p>Motor de juegos 2D open source.</p>
-            <button class="mini-btn">Ver</button>
+
+            <button class="action-btn" style="width: 100%; margin-top: 10px;" onclick="uploadProject()">
+              Publicar en la Tienda
+            </button>
           </div>
-          <!-- Project 3 -->
-          <div class="project-mini-card">
-            <div class="project-header">
-              <span class="material-icons-round">memory</span>
-              <span>RAM Booster</span>
+        </div>
+
+        <!-- Recent Uploads List -->
+        <h2 style="margin-top: 30px; margin-bottom: 15px; font-size: 1.2rem;">
+          Archivos Recientes de Usuarios
+        </h2>
+
+        <div class="community-library-list">
+          <!-- Item 1 -->
+          <div class="library-item">
+            <div class="lib-icon"><span class="material-icons-round">android</span></div>
+            <div class="lib-info">
+              <div class="lib-title">Super Emulator v2.4.apk</div>
+              <div class="lib-meta">Subido por @teczervideo • 45MB</div>
             </div>
-            <p>Optimización de memoria.</p>
-            <button class="mini-btn">Ver</button>
+            <button class="mini-btn">Descargar</button>
           </div>
-          <!-- Project 4 (Placeholder) -->
-          <div class="project-mini-card placeholder">
-            <span class="material-icons-round" style="font-size:40px; color:var(--text-secondary)">add_circle</span>
-            <p>Tu proyecto aquí</p>
+          <!-- Item 2 -->
+          <div class="library-item">
+            <div class="lib-icon"><span class="material-icons-round">extension</span></div>
+            <div class="lib-info">
+              <div class="lib-title">Mario64_Mod_HD.zip</div>
+              <div class="lib-meta">Subido por @guestUser • 120MB</div>
+            </div>
+            <button class="mini-btn">Descargar</button>
+          </div>
+          <!-- Item 3 -->
+          <div class="library-item">
+            <div class="lib-icon"><span class="material-icons-round">code</span></div>
+            <div class="lib-info">
+              <div class="lib-title">Python_Compiler_Portable.exe</div>
+              <div class="lib-meta">Subido por @devMaster • 15MB</div>
+            </div>
+            <button class="mini-btn">Descargar</button>
           </div>
         </div>
       </div>
