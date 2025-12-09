@@ -45,6 +45,20 @@ function renderProgramming() {
                     </button>
                 </div>
 
+                <div class="sidebar-card" style="border-color: #ff9800;">
+                    <div class="sidebar-title" style="color: #ff9800;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">settings</span>
+                        Configuración
+                    </div>
+                    <div class="sidebar-desc" style="color: #fff; font-size: 0.85rem; margin-bottom: 15px;">
+                        Para usar la IA real, necesitas configurar tu API Key de Gemini
+                    </div>
+                    <button class="opt-btn" onclick="showAPISetupGuide()" style="width: 100%; background: #ff9800;">
+                        <span class="material-icons-round" style="vertical-align: middle; margin-right: 5px;">book</span>
+                        Ver Guía de Configuración
+                    </button>
+                </div>
+
                 <div class="sidebar-card" style="border-color: #00e676;">
                     <div class="sidebar-title" style="color: #00e676;">
                         <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">tips_and_updates</span>
