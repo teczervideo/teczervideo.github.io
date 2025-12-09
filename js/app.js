@@ -18,7 +18,7 @@ window.onload = async () => {
         const fetchedApps = (await Promise.all(promises)).filter(a => a);
 
         // Load User Uploads from LocalStorage
-        const userUploads = JSON.parse(localStorage.getItem('tstore_uploaded_games') || '[]');
+        const userUploads = JSON.parse(localStorage.getItem('teczerstore_uploaded_games') || '[]');
 
         // Merge Catalog + User Uploads
         allApps = [...userUploads, ...fetchedApps]; // User uploads first
@@ -28,9 +28,9 @@ window.onload = async () => {
         console.error("Error loading catalog:", e);
     }
 
-    console.log(`[tStore] Loaded ${allApps.length} total apps`);
-    console.log(`[tStore] Catalog apps: ${allApps.filter(a => !a.isUserUpload).length}`);
-    console.log(`[tStore] User uploads: ${allApps.filter(a => a.isUserUpload).length}`);
+    console.log(`[TeczerStore] Loaded ${allApps.length} total apps`);
+    console.log(`[TeczerStore] Catalog apps: ${allApps.filter(a => !a.isUserUpload).length}`);
+    console.log(`[TeczerStore] User uploads: ${allApps.filter(a => a.isUserUpload).length}`);
 
     renderHome(); // Default view
 };
@@ -298,7 +298,7 @@ function renderUpload() {
                     <span class="material-icons-round" style="vertical-align:middle; margin-right:8px;">publish</span>
                     Publicar en la Tienda
                 </button>
-                <p style="text-align:center; margin-top:10px; font-size:0.8rem; color:#666;">Al publicar aceptas los términos de servicio de tStore.</p>
+                <p style="text-align:center; margin-top:10px; font-size:0.8rem; color:#666;">Al publicar aceptas los términos de servicio de TeczerStore.</p>
             </div>
         </div>
     </div>
@@ -371,7 +371,7 @@ function handleRealUpload() {
         const newApp = {
             name: name,
             author: author,
-            publisher: 'Comunidad tStore',
+            publisher: 'Comunidad TeczerStore',
             version: '1.0',
             category: type,
             platform: type, // Using type (Console/PC) as platform
@@ -387,9 +387,9 @@ function handleRealUpload() {
         };
 
         // Save to LocalStorage (Persist locally)
-        const currentUploads = JSON.parse(localStorage.getItem('tstore_uploaded_games') || '[]');
+        const currentUploads = JSON.parse(localStorage.getItem('teczerstore_uploaded_games') || '[]');
         currentUploads.push(newApp);
-        localStorage.setItem('tstore_uploaded_games', JSON.stringify(currentUploads));
+        localStorage.setItem('teczerstore_uploaded_games', JSON.stringify(currentUploads));
 
         // Update Runtime Memory
         allApps.unshift(newApp); // Add to top of list
